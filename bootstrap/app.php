@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\HandleInertiaRequests;
+use Cog\Laravel\Ban\Http\Middleware\ForbidBannedUser;
+use Cog\Laravel\Ban\Http\Middleware\LogsOutBannedUser;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,10 +16,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [
-            HandleInertiaRequests::class,
-            AddLinkHeadersForPreloadedAssets::class,
-        ]);
+        $middleware
+            ->web(append: [
+                HandleInertiaRequests::class,
+                AddLinkHeadersForPreloadedAssets::class,
+            ])
+            ->alias(aliases: [
+                'forbid-banned-user' => ForbidBannedUser::class,
+                'logs-out-banned-user' => LogsOutBannedUser::class,
+            ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

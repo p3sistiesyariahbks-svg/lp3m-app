@@ -1,0 +1,14 @@
+@startwbs
+'https://plantuml.com/wbs-diagram
+
+* root
+** home
+** profile
+*** about
+*** vision & mission
+*** personnel
+** news
+** announcement
+** document
+** contact
+@endwbs

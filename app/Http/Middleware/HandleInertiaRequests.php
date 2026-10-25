@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\MenuResource;
+use App\Models\Menu;
+use App\Settings\SocialLinksSettings;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,12 +38,16 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
-            ...parent::share($request),
+        return array_merge(parent::share($request), [
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
             ],
-        ];
+            'menu' => [
+                'header' => fn () => Menu::location('header')?->toResource(MenuResource::class),
+                'footer' => fn () => Menu::location('footer')?->toResource(MenuResource::class),
+            ],
+            'socialLinks' => fn () => app(SocialLinksSettings::class)->toArray(),
+        ]);
     }
 }

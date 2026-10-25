@@ -1,12 +1,9 @@
 {
-    "mcpServers": {
-        "laravel-boost": {
-            "type": "stdio",
-            "command": "php",
-            "args": [
-                "artisan",
-                "boost:mcp"
-            ]
-        }
+  "mcpServers": {
+    "laravel-boost": {
+      "type": "stdio",
+      "command": "php",
+      "args": ["artisan", "boost:mcp"]
     }
+  }
 }

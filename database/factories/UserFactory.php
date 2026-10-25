@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Waguilar\FilamentGuardian\Facades\Guardian;
 
 /**
  * @extends Factory<User>
@@ -41,5 +42,20 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Indicate that the user is super admin.
+     */
+    public function superAdmin(): Factory
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => 'Admin',
+            'email' => 'admin@domain.com',
+            'password' => Hash::make('password'),
+        ])->afterCreating(function (User $user) {
+            Guardian::createSuperAdminRole('admin');
+            Guardian::assignSuperAdminTo($user, 'admin');
+        });
     }
 }

@@ -1,0 +1,19 @@
+@startwbs
+'https://plantuml.com/wbs-diagram
+
+* root
+** dashboard
+** pages
+** contacts
+** news
+*** all news
+*** categories
+** documents
+*** all documents
+*** categories
+** administrator
+*** menus
+*** roles & permissions
+*** users
+*** settings
+@endwbs
