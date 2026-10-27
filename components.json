@@ -24,6 +24,7 @@
   "registries": {
     "@extend": "https://www.extend.ai/ui/r/styles/{style}/{name}.json",
     "@mapcn": "https://mapcn.dev/r/{name}.json",
-    "@diceui": "https://diceui.com/r/{style}/{name}.json"
+    "@diceui": "https://diceui.com/r/{style}/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}"
   }
 }
