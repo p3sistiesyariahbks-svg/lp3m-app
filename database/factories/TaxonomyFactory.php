@@ -40,12 +40,22 @@ class TaxonomyFactory extends Factory
     }
 
     /**
-     * Indicate that the taxonomy is document.
+     * Indicate that the taxonomy is documents.
      */
-    public function document(): static
+    public function documents(): static
     {
         return $this->state(fn (array $attributes) => [
             'type' => TaxonomyType::Documents,
+        ]);
+    }
+
+    /**
+     * Indicate that the taxonomy is gallery.
+     */
+    public function gallery(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'type' => TaxonomyType::Gallery,
         ]);
     }
 }

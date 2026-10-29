@@ -55,6 +55,23 @@ class MenuSeeder extends Seeder
             )
             ->create();
 
+        MenuItem::factory()
+            ->customText()
+            ->for($header)
+            ->state(['title' => 'Gallery'])
+            ->has(
+                MenuItem::factory()
+                    ->count(2)
+                    ->staticMenu()
+                    ->for($header)
+                    ->state(new Sequence(
+                        ['title' => 'Photo', 'url' => '/gallery/photos'],
+                        ['title' => 'Video', 'url' => '/gallery/videos'],
+                    )),
+                'children',
+            )
+            ->create();
+
         $footer = Menu::factory()
             ->create();
 

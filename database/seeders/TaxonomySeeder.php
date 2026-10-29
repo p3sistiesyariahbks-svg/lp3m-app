@@ -31,15 +31,32 @@ class TaxonomySeeder extends Seeder
 
         Taxonomy::factory()
             ->count(1)
-            ->document()
+            ->documents()
             ->has(
                 Taxonomy::factory()
                     ->count(2)
-                    ->document()
+                    ->documents()
                     ->has(
                         Taxonomy::factory()
                             ->count(2)
-                            ->document(),
+                            ->documents(),
+                        'children',
+                    ),
+                'children',
+            )
+            ->create();
+
+        Taxonomy::factory()
+            ->count(1)
+            ->gallery()
+            ->has(
+                Taxonomy::factory()
+                    ->count(2)
+                    ->gallery()
+                    ->has(
+                        Taxonomy::factory()
+                            ->count(2)
+                            ->gallery(),
                         'children',
                     ),
                 'children',

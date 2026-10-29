@@ -7,6 +7,9 @@ use App\Filament\Pages\ManageGeneral;
 use App\Filament\Resources\Announcements\AnnouncementResource;
 use App\Filament\Resources\DocumentCategories\DocumentCategoryResource;
 use App\Filament\Resources\Documents\DocumentResource;
+use App\Filament\Resources\GalleryCategories\GalleryCategoryResource;
+use App\Filament\Resources\GalleryPhotos\GalleryPhotoResource;
+use App\Filament\Resources\GalleryVideos\GalleryVideoResource;
 use App\Filament\Resources\Menus\MenuResource;
 use App\Filament\Resources\News\NewsResource;
 use App\Filament\Resources\NewsCategories\NewsCategoryResource;
@@ -159,6 +162,12 @@ class AdminPanelProvider extends PanelProvider
                                     ->url(fn (): string => DocumentResource::getUrl('index')),
                                 ...DocumentCategoryResource::getNavigationItems(),
                             ]),
+                        NavigationGroup::make('Gallery')
+                            ->items([
+                                ...GalleryPhotoResource::getNavigationItems(),
+                                ...GalleryVideoResource::getNavigationItems(),
+                                ...GalleryCategoryResource::getNavigationItems(),
+                            ]),
                         NavigationGroup::make('Partners')
                             ->items([
                                 NavigationItem::make('Add Partner')
@@ -258,6 +267,8 @@ class AdminPanelProvider extends PanelProvider
                             ->add('Home', '/')
                             ->add('News', '/news')
                             ->add('Document', '/documents')
+                            ->add('Photo', '/gallery/photos')
+                            ->add('Video', '/gallery/videos')
                             ->add('Contact', '/contact'),
                     ])
                     ->showCustomLinkPanel()

@@ -185,7 +185,7 @@ export default function NewsShowPage({
           <div className="m-0 block h-auto w-full p-0">
             <div className="flex items-center justify-between gap-4">
               <h2 className="truncate text-[1.5rem] font-semibold tracking-tight">
-                Keep Reading
+                Related News
               </h2>
 
               <Link

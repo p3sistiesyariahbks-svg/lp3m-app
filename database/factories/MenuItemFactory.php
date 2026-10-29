@@ -82,14 +82,4 @@ class MenuItemFactory extends Factory
             'url' => null,
         ]);
     }
-
-    /**
-     * Indicate that the menu item is a child of the given item.
-     */
-    public function childOf(MenuItem $menuItem): Factory
-    {
-        return $this->state(fn (array $attributes) => [
-            'parent_id' => $menuItem->getKey(),
-        ]);
-    }
 }

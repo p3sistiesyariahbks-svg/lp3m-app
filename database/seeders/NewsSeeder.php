@@ -13,17 +13,17 @@ class NewsSeeder extends Seeder
     public function run(): void
     {
         News::factory()
-            ->count(60)
+            ->count(12)
             ->draft()
             ->create();
 
         News::factory()
-            ->count(60)
+            ->count(12)
             ->published()
             ->create();
 
         News::factory()
-            ->count(60)
+            ->count(12)
             ->scheduled()
             ->create();
     }

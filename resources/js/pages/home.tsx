@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { cn } from 'cn';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRightIcon, ArrowUpRight, BadgeCheck } from 'lucide-react';
+import { ArrowRightIcon, BadgeCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -61,7 +61,7 @@ export default function HomePage() {
                   'h-10 rounded-full px-5',
                 )}
               >
-                Lihat Dokumen <ArrowUpRight className="size-5!" />
+                Lihat Dokumen
               </Link>
 
               <Link

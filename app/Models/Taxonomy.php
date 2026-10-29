@@ -81,4 +81,12 @@ class Taxonomy extends BaseTaxonomy
     {
         return $this->morphedByMany(Document::class, 'taxonomable', 'taxonomables');
     }
+
+    /**
+     * Get all of the galleries that are assigned this taxonomy.
+     */
+    public function galleries(): MorphToMany
+    {
+        return $this->morphedByMany(Gallery::class, 'taxonomable', 'taxonomables');
+    }
 }

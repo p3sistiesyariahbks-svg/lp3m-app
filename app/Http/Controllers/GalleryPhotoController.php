@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\GalleryType;
+use App\Enums\SortByType;
+use App\Enums\StatusType;
+use App\Enums\TaxonomyType;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\GalleryResource;
+use App\Models\Gallery;
+use App\Models\Taxonomy;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class GalleryPhotoController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): Response
+    {
+        $sortBy = $request->enum(
+            'sort_by',
+            SortByType::class,
+            SortByType::Latest
+        );
+
+        $gallery = Inertia::scroll(fn () => Gallery::query()
+            ->with(['categories', 'photos.media'])
+            ->where([
+                'type' => GalleryType::Photos,
+                'status' => StatusType::Published,
+            ])
+            ->sortBy($sortBy)
+            ->paginate(perPage: 12)
+            ->withQueryString()
+            ->toResourceCollection(GalleryResource::class)
+        );
+
+        $categories = Inertia::once(fn () => Taxonomy::getNestedTree(TaxonomyType::Gallery->value)
+            ->toResourceCollection(CategoryResource::class),
+        )->as('gallery.categories');
+
+        return Inertia::render('gallery/photos/list', [
+            'galleries' => $gallery,
+            'categories' => $categories,
+            'filters' => ['sort_by' => $sortBy],
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Gallery $gallery): Response
+    {
+        $gallery = $gallery->load(['categories', 'views', 'photos.media'])
+            ->toResource(GalleryResource::class);
+
+        $suggestions = Inertia::once(fn () => Gallery::query()
+            ->with(['categories', 'views', 'photos.media'])
+            ->where([
+                'type' => GalleryType::Photos,
+                'status' => StatusType::Published,
+            ])
+            ->whereKeyNot($gallery->getKey())
+            ->inRandomOrder()
+            ->limit(4)
+            ->get()
+            ->toResourceCollection(GalleryResource::class)
+        )
+            ->as('gallery.photos.suggestions');
+
+        return Inertia::render('gallery/photos/show', [
+            'gallery' => $gallery,
+            'suggestions' => $suggestions,
+        ]);
+    }
+}

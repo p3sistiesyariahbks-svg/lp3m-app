@@ -122,6 +122,9 @@ importers:
       '@inertiajs/vite':
         specifier: ^3.0.0
         version: 3.7.0(vite@8.2.2(@types/node@22.20.1)(jiti@2.7.0))
+      '@lightgallery/react':
+        specifier: ^3.0.0
+        version: 3.0.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@mantine/hooks':
         specifier: ^9.7.2
         version: 9.7.2(react@19.2.8)
@@ -170,6 +173,9 @@ importers:
       laravel-vite-plugin:
         specifier: ^3.1
         version: 3.2.0(fontaine@0.8.2(postcss@8.5.28)(rolldown@1.2.7)(vite@8.2.2(@types/node@22.20.1)(jiti@2.7.0)))(vite@8.2.2(@types/node@22.20.1)(jiti@2.7.0))
+      lightgallery:
+        specifier: ^3.0.0
+        version: 3.0.0
       lucide-react:
         specifier: ^1.42.0
         version: 1.47.0(react@19.2.8)
@@ -194,6 +200,9 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.8(react@19.2.8)
+      react-iframe:
+        specifier: ^2.0.0
+        version: 2.0.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-resizable-panels:
         specifier: ^4.12.4
         version: 4.12.4(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -965,6 +974,17 @@ packages:
 
   '@laravel/vite-plugin-wayfinder@0.1.10':
     resolution: {integrity: sha512-59ZCMCEeC1UcZkqbvn+G06C4D0C/jCm525gTft7T7RPAo+0ZaHtoKl9r86OFVFd/BwuJiOYky4zJUrAPRKyRaA==}
+
+  '@lightgallery/headless@3.0.0':
+    resolution: {integrity: sha512-6lip9x+jmsC4ou52T99/qcXiTWVnrMYZIy8BmsEDJaauViPr2RENTChgxiYP6UXWOVebyxUjC4JyTmKMZX13+Q==}
+    engines: {node: '>=18'}
+
+  '@lightgallery/react@3.0.0':
+    resolution: {integrity: sha512-xfdYMZyY96Jd/+LtV6ki3b2a9aYVCAh3KjHIFXmHv2Ha9aw9ZZaMWebYfurFc5HLrfm2olJC0H1CPKuFqRc8pg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
 
   '@mantine/hooks@9.7.2':
     resolution: {integrity: sha512-11emsRp/Mg+vfaKVyoMwiMdCHmO/15XOL6JG9fACkclVZnLPBVvRIaDdRBudsR3ALGZ5iTzrArPJDjjoeO6X4w==}
@@ -3129,6 +3149,10 @@ packages:
       fontaine:
         optional: true
 
+  lightgallery@3.0.0:
+    resolution: {integrity: sha512-UBzeo4rO1qeyG/hFRth5fzNebAnkpn5mfYzHUV3QAkOVh5mql6uK5QCq5M5wwmtdwuCeFDYsbctErxAKCkFUsQ==}
+    engines: {node: '>=18'}
+
   lightningcss-android-arm64@1.32.0:
     resolution: {integrity: sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==}
     engines: {node: '>= 12.0.0'}
@@ -3684,6 +3708,13 @@ packages:
     resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
       react: ^19.2.8
+
+  react-iframe@2.0.1:
+    resolution: {integrity: sha512-JIgixxKYAF9whk+Ofva4xIJZ+5bFqpvd/RbLcUrXzQjb+Jsuv/HzHe0Y0RVnz7m/eFxJPka/hovu+3NyhnX4Gg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
@@ -5251,6 +5282,14 @@ snapshots:
     optional: true
 
   '@laravel/vite-plugin-wayfinder@0.1.10': {}
+
+  '@lightgallery/headless@3.0.0': {}
+
+  '@lightgallery/react@3.0.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+    dependencies:
+      '@lightgallery/headless': 3.0.0
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   '@mantine/hooks@9.7.2(react@19.2.8)':
     dependencies:
@@ -7024,6 +7063,8 @@ snapshots:
     optionalDependencies:
       fontaine: 0.8.2(postcss@8.5.28)(rolldown@1.2.7)(vite@8.2.2(@types/node@22.20.1)(jiti@2.7.0))
 
+  lightgallery@3.0.0: {}
+
   lightningcss-android-arm64@1.32.0:
     optional: true
 
@@ -7539,6 +7580,11 @@ snapshots:
     dependencies:
       react: 19.2.8
       scheduler: 0.27.0
+
+  react-iframe@2.0.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   react-is@17.0.2: {}
 

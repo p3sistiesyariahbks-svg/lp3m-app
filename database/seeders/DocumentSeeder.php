@@ -13,17 +13,17 @@ class DocumentSeeder extends Seeder
     public function run(): void
     {
         Document::factory()
-            ->count(60)
+            ->count(12)
             ->draft()
             ->create();
 
         Document::factory()
-            ->count(60)
+            ->count(12)
             ->published()
             ->create();
 
         Document::factory()
-            ->count(60)
+            ->count(12)
             ->scheduled()
             ->create();
     }
