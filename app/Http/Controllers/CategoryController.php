@@ -61,7 +61,11 @@ class CategoryController extends Controller
 
         $category = $category->toResource(CategoryResource::class);
 
-        $categories = Inertia::once(fn () => Taxonomy::getNestedTree($type->value)
+        $categories = Inertia::once(fn () => Taxonomy::query()
+            ->type($type->value)
+            ->root()
+            ->ordered()
+            ->get()
             ->toResourceCollection(CategoryResource::class)
         )->as("{$type->value}.categories");
 

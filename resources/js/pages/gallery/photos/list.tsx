@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { cn } from 'cn';
 import { Head, Link, InfiniteScroll, router, usePage } from '@inertiajs/react';
-import { CalendarIcon, DotIcon, UserIcon, ImagesIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  DotIcon,
+  UserIcon,
+  ImagesIcon,
+  TagIcon,
+} from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -11,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -141,17 +148,21 @@ export default function GalleryPhotoListPage() {
           {categories.length > 0 && (
             <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
               <Card className="gap-4 p-6">
-                <h3 className="text-xl font-medium tracking-tight">
-                  Categories
-                </h3>
+                <CardHeader className="p-0">
+                  <CardTitle className="text-xl font-medium tracking-tight">
+                    Categories
+                  </CardTitle>
+                </CardHeader>
 
-                <ul className="mt-0 space-y-1">
-                  {categories.map((category) => (
-                    <li key={category.id}>
-                      <CategoryItem category={category} />
-                    </li>
-                  ))}
-                </ul>
+                <CardContent className="p-0">
+                  <ul className="mt-0 space-y-2">
+                    {categories.map((category) => (
+                      <li key={category.id}>
+                        <CategoryItem category={category} />
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
               </Card>
             </aside>
           )}
@@ -163,23 +174,25 @@ export default function GalleryPhotoListPage() {
 
 export function GalleryCard({ gallery }: { gallery: Gallery }) {
   return (
-    <div className="group flex w-full flex-col text-start transition-all duration-300 hover:-translate-y-1 hover:shadow-none">
-      <Link href={photoShow(gallery.slug)} className="relative" prefetch>
-        <AspectRatio
-          ratio={16 / 9}
-          className="relative mb-0 w-full overflow-hidden rounded-xl"
-        >
-          <img
-            className="bg-muted size-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            src={gallery.thumbnail.url}
-            alt={gallery.title}
-          />
-        </AspectRatio>
-      </Link>
+    <Card className="gap-0 overflow-hidden rounded-lg py-0 shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+      <CardHeader className="relative p-0">
+        <Link href={photoShow(gallery.slug)} className="relative" prefetch>
+          <AspectRatio
+            ratio={16 / 9}
+            className="relative w-full overflow-hidden border-b"
+          >
+            <img
+              className="bg-muted size-full object-cover transition-transform duration-500 ease-in-out group-hover/card:scale-110"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              src={gallery.thumbnail.url}
+              alt={gallery.title}
+            />
+          </AspectRatio>
+        </Link>
+      </CardHeader>
 
-      <div className="px-1">
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+      <CardContent className="flex flex-col p-4">
+        <div className="flex flex-wrap items-center gap-2">
           {gallery.categories.map((category) => (
             <Badge
               key={category.id}
@@ -200,7 +213,7 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
           </span>
         </div>
 
-        <h3 className="mt-3 line-clamp-2 text-[1.35rem] font-medium tracking-[-0.015em] text-pretty">
+        <h3 className="mt-4 line-clamp-2 text-[1.5rem] font-medium tracking-tight text-pretty">
           <Link href={photoShow(gallery.slug)} className="relative" prefetch>
             {gallery.title}
           </Link>
@@ -217,8 +230,8 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
             <CalendarIcon className="size-4" /> {gallery.published_at}
           </span>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -243,28 +256,29 @@ export function CategoryItem({ category }: { category: Category }) {
 
   return (
     <React.Fragment>
-      <Link
-        href={photoCategory(category.slug)}
-        className={cn(
-          'focus-visible:border-ring focus-visible:ring-ring/50 [a]:hover:bg-muted flex w-full flex-wrap items-center gap-2 rounded-lg border border-transparent px-2.5 py-2 text-sm transition-colors duration-100 outline-none focus-visible:ring-[3px] [a]:transition-colors',
-          {
-            'bg-muted/50 hover:bg-muted focus:bg-muted': url.startsWith(
-              photoCategory(category.slug).url,
-            ),
-          },
-        )}
-        prefetch
-        preserveScroll
-      >
-        <div className="flex flex-1 flex-col gap-1">
-          <div className="text-muted-foreground line-clamp-1 flex w-fit items-center gap-2 text-sm leading-snug font-normal underline-offset-4">
-            {category.name}
-          </div>
-        </div>
-      </Link>
+      <Item
+        variant="default"
+        size="xs"
+        className={cn({
+          'bg-muted/50 hover:bg-muted focus:bg-muted': url.startsWith(
+            photoCategory(category.slug).url,
+          ),
+        })}
+        render={
+          <Link href={photoCategory(category.slug)} prefetch preserveScroll>
+            <ItemMedia variant="icon">
+              <TagIcon />
+            </ItemMedia>
+
+            <ItemContent>
+              <ItemTitle>{category.name}</ItemTitle>
+            </ItemContent>
+          </Link>
+        }
+      />
 
       {category.children.length > 0 && (
-        <ul className="mt-0 ml-2 space-y-1 pl-2">
+        <ul className="mt-2 ml-2 space-y-2 pl-2">
           {category.children.map((grandchild) => (
             <li key={grandchild.id}>
               <CategoryItem category={grandchild} />

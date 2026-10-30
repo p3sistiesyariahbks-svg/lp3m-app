@@ -39,7 +39,11 @@ class GalleryVideoController extends Controller
             ->toResourceCollection(GalleryResource::class)
         );
 
-        $categories = Inertia::once(fn () => Taxonomy::getNestedTree(TaxonomyType::Gallery->value)
+        $categories = Inertia::once(fn () => Taxonomy::query()
+            ->type(TaxonomyType::Gallery->value)
+            ->root()
+            ->ordered()
+            ->get()
             ->toResourceCollection(CategoryResource::class),
         )->as('gallery.categories');
 

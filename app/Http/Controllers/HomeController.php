@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GalleryType;
 use App\Enums\StatusType;
+use App\Http\Resources\AnnouncementResource;
+use App\Http\Resources\GalleryResource;
 use App\Http\Resources\NewsResource;
 use App\Http\Resources\PartnerResource;
+use App\Models\Announcement;
+use App\Models\Gallery;
 use App\Models\News;
 use App\Models\Partner;
 use Illuminate\Http\Request;
@@ -21,12 +26,46 @@ class HomeController extends Controller
         $news = Inertia::once(fn () => News::query()
             ->with(['categories', 'views', 'media'])
             ->where('status', StatusType::Published)
-            ->inRandomOrder()
-            ->limit(4)
+            ->latest('published_at')
+            ->limit(6)
             ->get()
             ->toResourceCollection(NewsResource::class)
         )
             ->as('home.news');
+
+        $photos = Inertia::once(fn () => Gallery::query()
+            ->with(['categories', 'photos.media'])
+            ->where([
+                'type' => GalleryType::Photos,
+                'status' => StatusType::Published,
+            ])
+            ->latest('published_at')
+            ->limit(6)
+            ->get()
+            ->toResourceCollection(GalleryResource::class)
+        )
+            ->as('home.gallery.photos');
+
+        $videos = Inertia::once(fn () => Gallery::query()
+            ->with(['categories', 'media'])
+            ->where([
+                'type' => GalleryType::Videos,
+                'status' => StatusType::Published,
+            ])
+            ->latest('published_at')
+            ->limit(6)
+            ->get()
+            ->toResourceCollection(GalleryResource::class)
+        )
+            ->as('home.gallery.videos');
+
+        $announcements = Inertia::scroll(fn () => Announcement::query()
+            ->where('status', StatusType::Published)
+            ->latest('published_at')
+            ->paginate(12, pageName: 'announcements_page')
+            ->withQueryString()
+            ->toResourceCollection(AnnouncementResource::class)
+        );
 
         $partners = Inertia::once(fn () => Partner::query()
             ->with(['media'])
@@ -38,6 +77,9 @@ class HomeController extends Controller
 
         return Inertia::render('home', [
             'news' => $news,
+            'photos' => $photos,
+            'videos' => $videos,
+            'announcements' => $announcements,
             'partners' => $partners,
         ]);
     }

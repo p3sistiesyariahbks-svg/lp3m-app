@@ -1,7 +1,18 @@
 import * as React from 'react';
 import { cn } from 'cn';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRightIcon, BadgeCheck } from 'lucide-react';
+import { Head, Link, InfiniteScroll, usePage } from '@inertiajs/react';
+import { ArrowRightIcon, BadgeCheck, ChevronRightIcon } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Spinner } from '@/components/ui/spinner';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+} from '@/components/ui/item';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -11,10 +22,21 @@ import {
   MarqueeItem,
 } from '@/components/ui/marquee';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { NewsCard } from '@/pages/news/list';
 import { NumberTicker } from '@/components/ui/number-ticker';
+import { show as announcementShow } from '@/routes/announcements';
+import { NewsCard } from '@/pages/news/list';
+import {
+  GalleryCard as PhotoCard,
+  GalleryEmptyState as PhotoEmptyState,
+} from '@/pages/gallery/photos/list';
+import {
+  GalleryCard as VideoCard,
+  GalleryEmptyState as VideoEmptyState,
+} from '@/pages/gallery/videos/list';
 import { index as documentsIndex } from '@/routes/documents';
 import { index as newsIndex } from '@/routes/news';
+import { index as photosIndex } from '@/routes/gallery/photos';
+import { index as videosIndex } from '@/routes/gallery/videos';
 import type { PageProps } from '@/types/home';
 
 const statistics = [
@@ -25,7 +47,8 @@ const statistics = [
 ] as const;
 
 export default function HomePage() {
-  const { news, partners } = usePage<PageProps>().props;
+  const { news, photos, videos, announcements, partners } =
+    usePage<PageProps>().props;
 
   return (
     <React.Fragment>
@@ -117,30 +140,148 @@ export default function HomePage() {
 
       <section className="bg-muted/30 border-b py-12 lg:py-16">
         <div className="mx-auto flex max-w-(--breakpoint-xl) flex-col items-start gap-12 px-4 py-10 sm:px-6 lg:flex-row lg:px-8 lg:py-16">
-          <div className="m-0 block h-auto w-full p-0">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="truncate text-[1.5rem] font-semibold tracking-tight">
-                News
-              </h2>
+          <div className="flex w-full min-w-0 flex-1 flex-col gap-12">
+            <div className="m-0 block h-auto w-full p-0">
+              <div className="flex items-center justify-between gap-4">
+                <h2 className="truncate text-[1.5rem] font-semibold tracking-tight">
+                  News
+                </h2>
 
-              <Link
-                href={newsIndex()}
-                className={cn(
-                  buttonVariants({ size: 'lg', variant: 'ghost' }),
-                  'w-auto',
-                )}
-              >
-                View All
-                <ArrowRightIcon data-icon="inline-end" />
-              </Link>
+                <Link
+                  href={newsIndex()}
+                  className={cn(
+                    buttonVariants({ size: 'lg', variant: 'ghost' }),
+                    'w-auto',
+                  )}
+                >
+                  View All
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Link>
+              </div>
+
+              <div className="mt-4 grid auto-rows-fr gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {news.map((news) => (
+                  <NewsCard key={news.id} news={news} />
+                ))}
+              </div>
             </div>
 
-            <div className="mt-4 grid auto-rows-fr gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {news.map((news) => (
-                <NewsCard key={news.id} news={news} />
-              ))}
+            <div className="m-0 block h-auto w-full p-0">
+              <div className="flex items-center justify-between gap-4">
+                <h2 className="truncate text-[1.5rem] font-semibold tracking-tight">
+                  Photos
+                </h2>
+
+                <Link
+                  href={photosIndex()}
+                  className={cn(
+                    buttonVariants({ size: 'lg', variant: 'ghost' }),
+                    'w-auto',
+                  )}
+                >
+                  View All
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Link>
+              </div>
+
+              {photos.length > 0 ? (
+                <div className="mt-4 grid auto-rows-fr gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {photos.map((photo) => (
+                    <PhotoCard key={photo.id} gallery={photo} />
+                  ))}
+                </div>
+              ) : (
+                <PhotoEmptyState />
+              )}
+            </div>
+
+            <div className="m-0 block h-auto w-full p-0">
+              <div className="flex items-center justify-between gap-4">
+                <h2 className="truncate text-[1.5rem] font-semibold tracking-tight">
+                  Videos
+                </h2>
+
+                <Link
+                  href={videosIndex()}
+                  className={cn(
+                    buttonVariants({ size: 'lg', variant: 'ghost' }),
+                    'w-auto',
+                  )}
+                >
+                  View All
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Link>
+              </div>
+
+              {videos.length > 0 ? (
+                <div className="mt-4 grid auto-rows-fr gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {videos.map((video) => (
+                    <VideoCard key={video.id} gallery={video} />
+                  ))}
+                </div>
+              ) : (
+                <VideoEmptyState />
+              )}
             </div>
           </div>
+
+          <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
+            <Card className="gap-4 p-6">
+              <CardHeader className="p-0">
+                <CardTitle className="text-xl font-medium tracking-tight">
+                  Announcements
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="p-0">
+                {announcements.data.length > 0 ? (
+                  <ScrollArea className="[&_[data-slot=scroll-area-viewport]]:scroll-fade-y h-96">
+                    <InfiniteScroll
+                      data="announcements"
+                      onlyNext
+                      preserveUrl
+                      next={({ loading }) =>
+                        loading && (
+                          <div className="flex justify-center py-4">
+                            <Spinner className="size-4" />
+                          </div>
+                        )
+                      }
+                    >
+                      <ItemGroup className="gap-2">
+                        {announcements.data.map((announcement) => (
+                          <Item
+                            key={announcement.id}
+                            variant="outline"
+                            render={
+                              <Link href={announcementShow(announcement.slug)}>
+                                <ItemContent>
+                                  <ItemTitle className="line-clamp-none">
+                                    {announcement.title}
+                                  </ItemTitle>
+                                  <ItemDescription>
+                                    {announcement.published_at}
+                                  </ItemDescription>
+                                </ItemContent>
+
+                                <ItemActions>
+                                  <ChevronRightIcon className="size-4" />
+                                </ItemActions>
+                              </Link>
+                            }
+                          />
+                        ))}
+                      </ItemGroup>
+                    </InfiniteScroll>
+                  </ScrollArea>
+                ) : (
+                  <p className="text-muted-foreground text-sm">
+                    No announcements found.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </aside>
         </div>
       </section>
 

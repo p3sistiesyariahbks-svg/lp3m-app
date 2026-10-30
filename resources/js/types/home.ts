@@ -1,3 +1,6 @@
+import type { Announcement } from '@/types/announcement';
+import type { Gallery } from '@/types/gallery';
+import type { Paginated } from '@/types/pagination';
 import type { Media } from '@/types/media';
 import type { News } from '@/types/news';
 
@@ -10,5 +13,8 @@ export type Partner = {
 
 export type PageProps = {
   news: News[];
+  photos: Gallery[];
+  videos: Gallery[];
+  announcements: Paginated<Announcement>;
   partners: Partner[];
 };

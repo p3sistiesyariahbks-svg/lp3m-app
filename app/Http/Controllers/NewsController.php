@@ -35,8 +35,12 @@ class NewsController extends Controller
             ->toResourceCollection(NewsResource::class)
         );
 
-        $categories = Inertia::once(fn () => Taxonomy::getNestedTree(TaxonomyType::News->value)
-            ->toResourceCollection(CategoryResource::class),
+        $categories = Inertia::once(fn () => Taxonomy::query()
+            ->type(TaxonomyType::News->value)
+            ->root()
+            ->ordered()
+            ->get()
+            ->toResourceCollection(CategoryResource::class)
         )->as('news.categories');
 
         return Inertia::render('news/list', [

@@ -2,6 +2,7 @@
 
 use App\Enums\GalleryType;
 use App\Enums\TaxonomyType;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GalleryPhotoController;
@@ -17,6 +18,8 @@ Route::get('/', HomeController::class)
     ->name('home');
 Route::get('pages/{page:slug}', PageController::class)
     ->name('pages.show');
+Route::get('announcements/{announcement:slug}', AnnouncementController::class)
+    ->name('announcements.show');
 
 Route::get('news/category/{category:slug}', CategoryController::class)
     ->setDefaults([

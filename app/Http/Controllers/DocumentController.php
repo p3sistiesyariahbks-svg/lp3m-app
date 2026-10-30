@@ -35,7 +35,11 @@ class DocumentController extends Controller
             ->toResourceCollection(DocumentResource::class)
         );
 
-        $categories = Inertia::once(fn () => Taxonomy::getNestedTree(TaxonomyType::Documents->value)
+        $categories = Inertia::once(fn () => Taxonomy::query()
+            ->type(TaxonomyType::Documents->value)
+            ->root()
+            ->ordered()
+            ->get()
             ->toResourceCollection(CategoryResource::class)
         )->as('documents.categories');
 

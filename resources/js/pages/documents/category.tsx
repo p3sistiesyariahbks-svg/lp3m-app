@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import {
@@ -178,17 +178,21 @@ export default function DocumentCategoryPage() {
           {categories.length > 0 && (
             <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
               <Card className="gap-4 p-6">
-                <h3 className="text-xl font-medium tracking-tight">
-                  Categories
-                </h3>
+                <CardHeader className="p-0">
+                  <CardTitle className="text-xl font-medium tracking-tight">
+                    Categories
+                  </CardTitle>
+                </CardHeader>
 
-                <ul className="mt-0 space-y-1">
-                  {categories.map((category) => (
-                    <li key={category.id}>
-                      <CategoryItem category={category} />
-                    </li>
-                  ))}
-                </ul>
+                <CardContent className="p-0">
+                  <ul className="mt-0 space-y-2">
+                    {categories.map((category) => (
+                      <li key={category.id}>
+                        <CategoryItem category={category} />
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
               </Card>
             </aside>
           )}

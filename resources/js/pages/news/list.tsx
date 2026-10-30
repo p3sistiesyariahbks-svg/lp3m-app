@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { cn } from 'cn';
 import { Head, Link, InfiniteScroll, router, usePage } from '@inertiajs/react';
-import { CalendarIcon, DotIcon, UserIcon, NewspaperIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  DotIcon,
+  UserIcon,
+  NewspaperIcon,
+  TagIcon,
+} from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -11,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -141,17 +148,21 @@ export default function NewsListPage() {
           {categories.length > 0 && (
             <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
               <Card className="gap-4 p-6">
-                <h3 className="text-xl font-medium tracking-tight">
-                  Categories
-                </h3>
+                <CardHeader className="p-0">
+                  <CardTitle className="text-xl font-medium tracking-tight">
+                    Categories
+                  </CardTitle>
+                </CardHeader>
 
-                <ul className="mt-0 space-y-1">
-                  {categories.map((category) => (
-                    <li key={category.id}>
-                      <CategoryItem category={category} />
-                    </li>
-                  ))}
-                </ul>
+                <CardContent className="p-0">
+                  <ul className="mt-0 space-y-2">
+                    {categories.map((category) => (
+                      <li key={category.id}>
+                        <CategoryItem category={category} />
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
               </Card>
             </aside>
           )}
@@ -249,28 +260,29 @@ export function CategoryItem({ category }: { category: Category }) {
 
   return (
     <React.Fragment>
-      <Link
-        href={newsCategory(category.slug)}
-        className={cn(
-          'focus-visible:border-ring focus-visible:ring-ring/50 [a]:hover:bg-muted flex w-full flex-wrap items-center gap-2 rounded-lg border border-transparent px-2.5 py-2 text-sm transition-colors duration-100 outline-none focus-visible:ring-[3px] [a]:transition-colors',
-          {
-            'bg-muted/50 hover:bg-muted focus:bg-muted': url.startsWith(
-              newsCategory(category.slug).url,
-            ),
-          },
-        )}
-        prefetch
-        preserveScroll
-      >
-        <div className="flex flex-1 flex-col gap-1">
-          <div className="text-muted-foreground line-clamp-1 flex w-fit items-center gap-2 text-sm leading-snug font-normal underline-offset-4">
-            {category.name}
-          </div>
-        </div>
-      </Link>
+      <Item
+        variant="default"
+        size="xs"
+        className={cn({
+          'bg-muted/50 hover:bg-muted focus:bg-muted': url.startsWith(
+            newsCategory(category.slug).url,
+          ),
+        })}
+        render={
+          <Link href={newsCategory(category.slug)} prefetch preserveScroll>
+            <ItemMedia variant="icon">
+              <TagIcon />
+            </ItemMedia>
+
+            <ItemContent>
+              <ItemTitle>{category.name}</ItemTitle>
+            </ItemContent>
+          </Link>
+        }
+      />
 
       {category.children.length > 0 && (
-        <ul className="mt-0 ml-2 space-y-1 pl-2">
+        <ul className="mt-2 ml-2 space-y-2 pl-2">
           {category.children.map((grandchild) => (
             <li key={grandchild.id}>
               <CategoryItem category={grandchild} />
