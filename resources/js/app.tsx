@@ -16,6 +16,7 @@ void createInertiaApp({
     return (
       <ThemeProvider
         attribute="class"
+        storageKey="theme"
         defaultTheme="system"
         enableSystem
         disableTransitionOnChange

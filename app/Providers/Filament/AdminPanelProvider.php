@@ -64,6 +64,8 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->unsavedChangesAlerts()
+            ->sidebarCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->colors([
@@ -206,8 +208,7 @@ class AdminPanelProvider extends PanelProvider
                     ->passwordReset(fn ($config) => $config
                         ->mediaPosition(MediaPosition::Left)
                         ->mediaSize('50%')
-                    )
-                    ->themeToggle(),
+                    ),
                 FilamentGuardianPlugin::make()
                     ->superAdmin()
                     ->superAdminRoleName('Super Admin')

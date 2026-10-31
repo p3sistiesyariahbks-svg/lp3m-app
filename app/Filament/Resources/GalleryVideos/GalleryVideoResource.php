@@ -8,6 +8,7 @@ use App\Filament\Resources\GalleryVideos\Pages\EditGalleryVideo;
 use App\Filament\Resources\GalleryVideos\Pages\ListGalleryVideos;
 use App\Filament\Resources\GalleryVideos\Schemas\GalleryVideoForm;
 use App\Filament\Resources\GalleryVideos\Tables\GalleryVideosTable;
+use App\Filament\Resources\GalleryVideos\Widgets\GalleryVideoStatsOverview;
 use App\Models\Gallery;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -47,6 +48,13 @@ class GalleryVideoResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            GalleryVideoStatsOverview::class,
         ];
     }
 

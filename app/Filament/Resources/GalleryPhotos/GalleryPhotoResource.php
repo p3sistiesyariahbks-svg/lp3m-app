@@ -8,6 +8,7 @@ use App\Filament\Resources\GalleryPhotos\Pages\EditGalleryPhoto;
 use App\Filament\Resources\GalleryPhotos\Pages\ListGalleryPhotos;
 use App\Filament\Resources\GalleryPhotos\Schemas\GalleryPhotoForm;
 use App\Filament\Resources\GalleryPhotos\Tables\GalleryPhotosTable;
+use App\Filament\Resources\GalleryPhotos\Widgets\GalleryPhotoStatsOverview;
 use App\Models\Gallery;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -47,6 +48,13 @@ class GalleryPhotoResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            GalleryPhotoStatsOverview::class,
         ];
     }
 
