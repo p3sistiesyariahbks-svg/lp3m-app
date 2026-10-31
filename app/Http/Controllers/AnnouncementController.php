@@ -14,6 +14,8 @@ class AnnouncementController extends Controller
      */
     public function __invoke(Announcement $announcement): Response
     {
+        views($announcement)->record();
+
         $announcement = $announcement->toResource(AnnouncementResource::class);
 
         return Inertia::render('announcements/show', [

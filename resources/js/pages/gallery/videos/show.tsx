@@ -95,7 +95,6 @@ export default function GalleryVideoShowPage({
                     <Link
                       href={galleryCategory(category.slug)}
                       className="relative"
-                      prefetch
                     >
                       {category.name}
                     </Link>
@@ -119,7 +118,6 @@ export default function GalleryVideoShowPage({
                       <Link
                         href={galleryCategory(category.slug)}
                         className="relative"
-                        prefetch
                       >
                         {category.name}
                       </Link>

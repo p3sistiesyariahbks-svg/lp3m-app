@@ -109,7 +109,6 @@ export default function GalleryPhotoShowPage({
                     <Link
                       href={galleryCategory(category.slug)}
                       className="relative"
-                      prefetch
                     >
                       {category.name}
                     </Link>
@@ -133,7 +132,6 @@ export default function GalleryPhotoShowPage({
                       <Link
                         href={galleryCategory(category.slug)}
                         className="relative"
-                        prefetch
                       >
                         {category.name}
                       </Link>

@@ -177,7 +177,7 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
   return (
     <Card className="gap-0 overflow-hidden rounded-lg py-0 shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
       <CardHeader className="relative p-0">
-        <Link href={galleryShow(gallery.slug)} className="relative" prefetch>
+        <Link href={galleryShow(gallery.slug)} className="relative">
           <AspectRatio
             ratio={16 / 9}
             className="relative w-full overflow-hidden border-b"
@@ -210,7 +210,6 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
                 <Link
                   href={galleryCategory(category.slug)}
                   className="relative"
-                  prefetch
                 >
                   {category.name}
                 </Link>
@@ -220,7 +219,7 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
         </div>
 
         <h3 className="mt-4 line-clamp-2 text-[1.5rem] font-medium tracking-tight text-pretty">
-          <Link href={galleryShow(gallery.slug)} className="relative" prefetch>
+          <Link href={galleryShow(gallery.slug)} className="relative">
             {gallery.title}
           </Link>
         </h3>
@@ -275,7 +274,7 @@ export function CategoryItem({ category }: { category: Category }) {
           ),
         })}
         render={
-          <Link href={galleryCategory(category.slug)} prefetch preserveScroll>
+          <Link href={galleryCategory(category.slug)} preserveScroll>
             <ItemMedia variant="icon">
               <TagIcon />
             </ItemMedia>

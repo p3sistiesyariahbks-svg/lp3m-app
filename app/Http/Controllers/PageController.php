@@ -14,6 +14,8 @@ class PageController extends Controller
      */
     public function __invoke(Page $page): Response
     {
+        views($page)->record();
+
         $page = $page->load(['media'])
             ->toResource(PageResource::class);
 

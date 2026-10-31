@@ -198,7 +198,6 @@ export function DocumentCard({ document }: { document: Document }) {
                 <Link
                   href={documentCategory(category.slug)}
                   className="relative"
-                  prefetch
                 >
                   {category.name}
                 </Link>
@@ -259,7 +258,7 @@ export function CategoryItem({ category }: { category: Category }) {
           ),
         })}
         render={
-          <Link href={documentCategory(category.slug)} prefetch preserveScroll>
+          <Link href={documentCategory(category.slug)} preserveScroll>
             <ItemMedia variant="icon">
               <TagIcon />
             </ItemMedia>

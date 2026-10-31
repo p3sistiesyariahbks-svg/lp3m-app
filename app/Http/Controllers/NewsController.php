@@ -55,6 +55,8 @@ class NewsController extends Controller
      */
     public function show(News $news): Response
     {
+        views($news)->record();
+
         $news = $news->load(['categories', 'views', 'media'])
             ->toResource(NewsResource::class);
 

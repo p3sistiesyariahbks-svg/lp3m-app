@@ -55,6 +55,8 @@ class DocumentController extends Controller
      */
     public function show(Document $document): Response
     {
+        views($document)->record();
+
         $document = $document->load('media')
             ->toResource(DocumentResource::class);
 

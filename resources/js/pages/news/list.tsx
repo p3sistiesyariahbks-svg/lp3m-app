@@ -176,7 +176,7 @@ export function NewsCard({ news }: { news: News }) {
   return (
     <Card className="gap-0 overflow-hidden rounded-lg py-0 shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
       <CardHeader className="relative p-0">
-        <Link href={newsShow(news.slug)} className="relative" prefetch>
+        <Link href={newsShow(news.slug)} className="relative">
           <AspectRatio
             ratio={16 / 9}
             className="relative w-full overflow-hidden border-b"
@@ -197,11 +197,7 @@ export function NewsCard({ news }: { news: News }) {
             <Badge
               key={category.id}
               render={
-                <Link
-                  href={newsCategory(category.slug)}
-                  className="relative"
-                  prefetch
-                >
+                <Link href={newsCategory(category.slug)} className="relative">
                   {category.name}
                 </Link>
               }
@@ -214,7 +210,7 @@ export function NewsCard({ news }: { news: News }) {
         </div>
 
         <h3 className="mt-4 line-clamp-2 text-[1.5rem] font-medium tracking-tight text-pretty">
-          <Link href={newsShow(news.slug)} className="relative" prefetch>
+          <Link href={newsShow(news.slug)} className="relative">
             {news.title}
           </Link>
         </h3>
@@ -269,7 +265,7 @@ export function CategoryItem({ category }: { category: Category }) {
           ),
         })}
         render={
-          <Link href={newsCategory(category.slug)} prefetch preserveScroll>
+          <Link href={newsCategory(category.slug)} preserveScroll>
             <ItemMedia variant="icon">
               <TagIcon />
             </ItemMedia>

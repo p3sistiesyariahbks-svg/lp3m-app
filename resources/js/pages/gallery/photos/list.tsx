@@ -213,7 +213,6 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
         <Link
           href={photoShow(gallery.slug)}
           className="relative"
-          prefetch
           onPointerEnter={handlePointerEnter}
           onPointerLeave={interval.stop}
         >
@@ -254,11 +253,7 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
             <Badge
               key={category.id}
               render={
-                <Link
-                  href={photoCategory(category.slug)}
-                  className="relative"
-                  prefetch
-                >
+                <Link href={photoCategory(category.slug)} className="relative">
                   {category.name}
                 </Link>
               }
@@ -267,7 +262,7 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
         </div>
 
         <h3 className="mt-4 line-clamp-2 text-[1.5rem] font-medium tracking-tight text-pretty">
-          <Link href={photoShow(gallery.slug)} className="relative" prefetch>
+          <Link href={photoShow(gallery.slug)} className="relative">
             {gallery.title}
           </Link>
         </h3>
@@ -322,7 +317,7 @@ export function CategoryItem({ category }: { category: Category }) {
           ),
         })}
         render={
-          <Link href={photoCategory(category.slug)} prefetch preserveScroll>
+          <Link href={photoCategory(category.slug)} preserveScroll>
             <ItemMedia variant="icon">
               <TagIcon />
             </ItemMedia>

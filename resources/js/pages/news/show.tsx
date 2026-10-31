@@ -94,7 +94,6 @@ export default function NewsShowPage({
                     <Link
                       href={newsCategory(category.slug)}
                       className="relative"
-                      prefetch
                     >
                       {category.name}
                     </Link>
@@ -118,7 +117,6 @@ export default function NewsShowPage({
                       <Link
                         href={newsCategory(category.slug)}
                         className="relative"
-                        prefetch
                       >
                         {category.name}
                       </Link>

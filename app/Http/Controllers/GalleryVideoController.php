@@ -59,6 +59,8 @@ class GalleryVideoController extends Controller
      */
     public function show(Gallery $gallery): Response
     {
+        views($gallery)->record();
+
         $gallery = $gallery->load(['categories', 'views', 'media'])
             ->toResource(GalleryResource::class);
 
