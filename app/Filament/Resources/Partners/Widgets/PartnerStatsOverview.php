@@ -29,14 +29,6 @@ class PartnerStatsOverview extends StatsOverviewWidget
                 ->icon(Heroicon::OutlinedLink)
                 ->description('All documents'),
             Stat::make(
-                'Published',
-                $this->getPageTableQuery()
-                    ->where('status', StatusType::Published)
-                    ->count()
-            )
-                ->icon(Heroicon::OutlinedEye)
-                ->description('Live on site'),
-            Stat::make(
                 'Drafts',
                 $this->getPageTableQuery()
                     ->where('status', StatusType::Draft)
@@ -44,6 +36,14 @@ class PartnerStatsOverview extends StatsOverviewWidget
             )
                 ->icon(Heroicon::OutlinedPencilSquare)
                 ->description('Not yet published'),
+            Stat::make(
+                'Published',
+                $this->getPageTableQuery()
+                    ->where('status', StatusType::Published)
+                    ->count()
+            )
+                ->icon(Heroicon::OutlinedEye)
+                ->description('Live on site'),
             Stat::make(
                 'Scheduled',
                 $this->getPageTableQuery()

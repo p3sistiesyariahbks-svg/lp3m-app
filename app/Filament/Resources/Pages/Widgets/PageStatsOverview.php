@@ -29,14 +29,6 @@ class PageStatsOverview extends StatsOverviewWidget
                 ->icon(Heroicon::OutlinedDocument)
                 ->description('All pages'),
             Stat::make(
-                'Published',
-                $this->getPageTableQuery()
-                    ->where('status', StatusType::Published)
-                    ->count()
-            )
-                ->icon(Heroicon::OutlinedEye)
-                ->description('Live on site'),
-            Stat::make(
                 'Drafts',
                 $this->getPageTableQuery()
                     ->where('status', StatusType::Draft)
@@ -44,6 +36,14 @@ class PageStatsOverview extends StatsOverviewWidget
             )
                 ->icon(Heroicon::OutlinedPencilSquare)
                 ->description('Not yet published'),
+            Stat::make(
+                'Published',
+                $this->getPageTableQuery()
+                    ->where('status', StatusType::Published)
+                    ->count()
+            )
+                ->icon(Heroicon::OutlinedEye)
+                ->description('Live on site'),
             Stat::make(
                 'Scheduled',
                 $this->getPageTableQuery()

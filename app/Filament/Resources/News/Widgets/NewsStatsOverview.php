@@ -29,14 +29,6 @@ class NewsStatsOverview extends StatsOverviewWidget
                 ->icon(Heroicon::OutlinedNewspaper)
                 ->description('All news'),
             Stat::make(
-                'Published',
-                $this->getPageTableQuery()
-                    ->where('status', StatusType::Published)
-                    ->count()
-            )
-                ->icon(Heroicon::OutlinedEye)
-                ->description('Live on site'),
-            Stat::make(
                 'Drafts',
                 $this->getPageTableQuery()
                     ->where('status', StatusType::Draft)
@@ -44,6 +36,14 @@ class NewsStatsOverview extends StatsOverviewWidget
             )
                 ->icon(Heroicon::OutlinedPencilSquare)
                 ->description('Not yet published'),
+            Stat::make(
+                'Published',
+                $this->getPageTableQuery()
+                    ->where('status', StatusType::Published)
+                    ->count()
+            )
+                ->icon(Heroicon::OutlinedEye)
+                ->description('Live on site'),
             Stat::make(
                 'Scheduled',
                 $this->getPageTableQuery()
