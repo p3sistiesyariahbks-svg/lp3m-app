@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type', GalleryType::cases());
             $table->string('title');
             $table->string('slug')->unique();
+            $table->longText('content')->nullable();
             $table->text('description')->nullable();
             $table->text('video_url')->nullable();
             $table->enum('status', StatusType::cases())->default(StatusType::Draft);

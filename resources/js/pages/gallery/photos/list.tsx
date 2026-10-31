@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSnapCarousel } from 'react-snap-carousel';
 import { cn } from 'cn';
 import { Head, Link, InfiniteScroll, router, usePage } from '@inertiajs/react';
 import {
@@ -8,6 +9,7 @@ import {
   ImagesIcon,
   TagIcon,
 } from 'lucide-react';
+import { useInterval, useReducedMotion } from '@mantine/hooks';
 import {
   Select,
   SelectContent,
@@ -146,7 +148,7 @@ export default function GalleryPhotoListPage() {
           </div>
 
           {categories.length > 0 && (
-            <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
+            <aside className="sticky top-24 w-full shrink-0 lg:max-w-80">
               <Card className="gap-4 p-6">
                 <CardHeader className="p-0">
                   <CardTitle className="text-xl font-medium tracking-tight">
@@ -173,20 +175,75 @@ export default function GalleryPhotoListPage() {
 }
 
 export function GalleryCard({ gallery }: { gallery: Gallery }) {
+  const {
+    scrollRef,
+    activePageIndex,
+    pages,
+    hasNextPage,
+    next,
+    goTo,
+    refresh,
+  } = useSnapCarousel({
+    initialPages: gallery.images.map((_, index) => [index]),
+  });
+
+  const reducedMotion = useReducedMotion();
+
+  const interval = useInterval(() => {
+    if (hasNextPage) {
+      next();
+    } else {
+      goTo(0, { behavior: 'smooth' });
+    }
+  }, 3000);
+
+  function handlePointerEnter(event: React.PointerEvent<HTMLAnchorElement>) {
+    if (
+      event.pointerType === 'mouse' &&
+      gallery.images.length > 1 &&
+      !reducedMotion
+    ) {
+      interval.start();
+    }
+  }
+
   return (
     <Card className="gap-0 overflow-hidden rounded-lg py-0 shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
       <CardHeader className="relative p-0">
-        <Link href={photoShow(gallery.slug)} className="relative" prefetch>
+        <Link
+          href={photoShow(gallery.slug)}
+          className="relative"
+          prefetch
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={interval.stop}
+        >
           <AspectRatio
             ratio={16 / 9}
             className="relative w-full overflow-hidden border-b"
           >
-            <img
-              className="bg-muted size-full object-cover transition-transform duration-500 ease-in-out group-hover/card:scale-110"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              src={gallery.thumbnail.url}
-              alt={gallery.title}
-            />
+            <div
+              ref={scrollRef}
+              className="flex size-full snap-x snap-mandatory overflow-hidden"
+            >
+              {gallery.images.map((photo) => (
+                <div
+                  key={photo.id}
+                  className="h-full min-w-0 shrink-0 grow-0 basis-full snap-start overflow-hidden"
+                >
+                  <img
+                    className="bg-muted size-full object-cover transition-transform duration-500 ease-in-out group-hover/card:scale-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    src={photo.image.url}
+                    alt={photo.alt}
+                    onLoad={refresh}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <span className="pointer-events-none absolute right-3 bottom-3 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white tabular-nums">
+              {pages.length > 0 ? activePageIndex + 1 : 0} / {pages.length}
+            </span>
           </AspectRatio>
         </Link>
       </CardHeader>
@@ -207,10 +264,6 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
               }
             />
           ))}
-
-          <span className="text-muted-foreground text-xs font-medium">
-            {gallery.images.length} images
-          </span>
         </div>
 
         <h3 className="mt-4 line-clamp-2 text-[1.5rem] font-medium tracking-tight text-pretty">
@@ -218,6 +271,10 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
             {gallery.title}
           </Link>
         </h3>
+
+        <p className="text-muted-foreground mt-2 line-clamp-3 text-ellipsis">
+          {gallery.description}
+        </p>
 
         <div className="mt-4 flex items-center justify-start gap-1">
           <span className="text-muted-foreground flex items-center gap-1.5 text-sm">

@@ -135,9 +135,7 @@ export default function MainLayout({
         </header>
 
         <main className="m-0 block h-auto w-auto shrink-0 grow p-0">
-          <div className="mx-auto block h-auto w-full overflow-hidden p-0">
-            {children}
-          </div>
+          <div className="mx-auto block h-auto w-full p-0">{children}</div>
         </main>
 
         <footer className="bg-muted m-0 block h-auto w-auto shrink-0 border-t p-0">

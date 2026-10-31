@@ -31,6 +31,7 @@ import {
   XShareButton,
 } from 'react-share';
 import { useClipboard } from '@mantine/hooks';
+import DOMPurify from 'isomorphic-dompurify';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -57,6 +58,7 @@ export default function GalleryVideoShowPage({
   gallery: Gallery;
   suggestions: Gallery[];
 }) {
+  const content = DOMPurify.sanitize(gallery.content);
   const [category] = gallery.categories;
 
   return (
@@ -170,9 +172,10 @@ export default function GalleryVideoShowPage({
             </div>
 
             <div className="mt-12 flex flex-col gap-6">
-              <div className="prose prose-lg dark:prose-invert prose-a:text-brand prose-img:rounded-lg max-w-none">
-                <p className="whitespace-pre-wrap">{gallery.description}</p>
-              </div>
+              <div
+                className="prose prose-lg dark:prose-invert prose-a:text-brand prose-img:rounded-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
             </div>
 
             <div className="mt-8 border-t pt-6">

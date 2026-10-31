@@ -147,7 +147,7 @@ export default function GalleryVideoListPage() {
           </div>
 
           {categories.length > 0 && (
-            <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
+            <aside className="sticky top-24 w-full shrink-0 lg:max-w-80">
               <Card className="gap-4 p-6">
                 <CardHeader className="p-0">
                   <CardTitle className="text-xl font-medium tracking-tight">
@@ -224,6 +224,10 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
             {gallery.title}
           </Link>
         </h3>
+
+        <p className="text-muted-foreground mt-2 line-clamp-3 text-ellipsis">
+          {gallery.description}
+        </p>
 
         <div className="mt-4 flex items-center justify-start gap-1">
           <span className="text-muted-foreground flex items-center gap-1.5 text-sm">

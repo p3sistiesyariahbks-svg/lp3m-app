@@ -29,6 +29,7 @@ import {
   XShareButton,
 } from 'react-share';
 import { useClipboard } from '@mantine/hooks';
+import DOMPurify from 'isomorphic-dompurify';
 import { LightGallery } from '@lightgallery/react';
 import Thumbnail from '@lightgallery/react/plugins/thumbnail';
 import Zoom from '@lightgallery/react/plugins/zoom';
@@ -66,6 +67,7 @@ export default function GalleryPhotoShowPage({
 }) {
   const [container, setContainer] = React.useState<HTMLElement | null>(null);
 
+  const content = DOMPurify.sanitize(gallery.content);
   const [category] = gallery.categories;
   const images = gallery.images.map((photo) => ({
     src: photo.image.url,
@@ -172,7 +174,7 @@ export default function GalleryPhotoShowPage({
                   slides={images}
                   plugins={[Thumbnail, Zoom, Autoplay]}
                   autoplay={{
-                    slideShowAutoplay: false,
+                    slideShowAutoplay: true,
                     slideShowInterval: 3000,
                     autoplayControls: true,
                     progressBar: true,
@@ -186,9 +188,10 @@ export default function GalleryPhotoShowPage({
             </AspectRatio>
 
             <div className="mt-12 flex flex-col gap-6">
-              <div className="prose prose-lg dark:prose-invert prose-a:text-brand prose-img:rounded-lg max-w-none">
-                <p className="whitespace-pre-wrap">{gallery.description}</p>
-              </div>
+              <div
+                className="prose prose-lg dark:prose-invert prose-a:text-brand prose-img:rounded-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
             </div>
 
             <div className="mt-8 border-t pt-6">

@@ -17,6 +17,7 @@ export type Gallery = {
   slug: string;
   images: GalleryPhoto[];
   video_url: string;
+  content: string;
   description: string;
   status: StatusType;
   categories: Category[];

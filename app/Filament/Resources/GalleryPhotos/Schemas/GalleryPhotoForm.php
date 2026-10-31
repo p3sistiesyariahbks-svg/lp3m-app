@@ -20,8 +20,10 @@ use Filament\Schemas\Components\Text;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
+use Kisame76\FilamentAdvancedRichEditor\Forms\Components\AdvancedRichEditor;
 
 class GalleryPhotoForm
 {
@@ -78,13 +80,15 @@ class GalleryPhotoForm
                                         ->itemLabel(fn (array $state): ?string => $state['alt'] ?? null)
                                         ->minItems(1)
                                         ->maxItems(10),
-                                    Textarea::make('description')
+                                    AdvancedRichEditor::make('content')
                                         ->nullable()
-                                        ->string()
-                                        ->minLength(3)
                                         ->maxLength(65535)
-                                        ->label('Description')
-                                        ->autosize(),
+                                        ->toolbarAlignment(Alignment::Left)
+                                        ->mediaLibrary(false)
+                                        ->headingLevels([1, 2, 3, 4, 5, 6])
+                                        ->fileAttachmentsMaxSize(2048)
+                                        ->resizableImages()
+                                        ->belowContent('Use the toolbar to format text, add headings, lists, links, and images.'),
                                 ]),
                             Section::make('Advanced Settings')
                                 ->schema([

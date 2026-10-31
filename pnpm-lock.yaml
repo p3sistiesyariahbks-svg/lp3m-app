@@ -209,6 +209,9 @@ importers:
       react-share:
         specifier: ^6.1.0
         version: 6.1.0(react@19.2.8)
+      react-snap-carousel:
+        specifier: ^0.5.1
+        version: 0.5.1(react@19.2.8)
       recharts:
         specifier: 3.8.0
         version: 3.8.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-is@17.0.2)(react@19.2.8)(redux@5.0.1)
@@ -3767,6 +3770,11 @@ packages:
     resolution: {integrity: sha512-5+do0CzuHxMTplqBLPFsnN8SQT+2Jf2AdLK0OJDXdd+/dSjzn0/a5CYVpxK3PI1HInspkLtreVGYlp2W8X9SjA==}
     peerDependencies:
       react: ^18 || ^19
+
+  react-snap-carousel@0.5.1:
+    resolution: {integrity: sha512-t8FMtBUUIi65ie2B1ton1ew3LxONMNBeJXOZUCmg9lGZnT25H8vEj8Z0+UeWVmT9mgSdEKTnySWVWWeCzE90KA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
@@ -7630,6 +7638,10 @@ snapshots:
   react-share@6.1.0(react@19.2.8):
     dependencies:
       classnames: 2.5.1
+      react: 19.2.8
+
+  react-snap-carousel@0.5.1(react@19.2.8):
+    dependencies:
       react: 19.2.8
 
   react-style-singleton@2.2.3(@types/react@19.2.18)(react@19.2.8):

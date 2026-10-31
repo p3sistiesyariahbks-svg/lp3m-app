@@ -9,6 +9,8 @@ use App\Models\Gallery;
 use App\Models\Taxonomy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use JordJD\PHPSummary\SummaryTool;
+use Soundasleep\Html2Text;
 
 /**
  * @extends Factory<Gallery>
@@ -20,7 +22,18 @@ class GalleryFactory extends Factory
      */
     public function configure(): static
     {
-        return $this->afterCreating(function (Gallery $gallery) {
+        return $this->afterMaking(function (Gallery $gallery) {
+            $text = Html2Text::convert($gallery->content, [
+                'ignore_errors' => true,
+                'drop_links' => true,
+                'char_set' => 'auto',
+            ]);
+
+            $gallery->description = Str::limit(
+                (new SummaryTool($text))->getSummary(),
+                160
+            );
+        })->afterCreating(function (Gallery $gallery) {
             $taxonomyIds = Taxonomy::where('type', TaxonomyType::Gallery)
                 ->inRandomOrder()
                 ->limit(3)
@@ -46,7 +59,7 @@ class GalleryFactory extends Factory
             'slug' => function (array $attributes): string {
                 return Str::slug($attributes['title']);
             },
-            'description' => fake()->sentence(),
+            'content' => fake()->randomHtml(),
             'video_url' => 'https://www.youtube.com/embed/tgbNymZ7vqY',
             'status' => fake()->randomElement(StatusType::class),
             'published_at' => null,

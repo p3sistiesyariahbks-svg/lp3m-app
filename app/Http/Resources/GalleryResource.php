@@ -21,6 +21,7 @@ class GalleryResource extends JsonResource
             'slug' => $this->slug,
             'images' => GalleryPhotoResource::collection($this->whenLoaded('photos')),
             'video_url' => $this->video_url,
+            'content' => $this->content,
             'description' => $this->description,
             'status' => $this->status,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),

@@ -23,8 +23,7 @@ import {
 } from '@/components/ui/marquee';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { NumberTicker } from '@/components/ui/number-ticker';
-import { show as announcementShow } from '@/routes/announcements';
-import { NewsCard } from '@/pages/news/list';
+import { NewsCard, NewsEmptyState } from '@/pages/news/list';
 import {
   GalleryCard as PhotoCard,
   GalleryEmptyState as PhotoEmptyState,
@@ -33,6 +32,8 @@ import {
   GalleryCard as VideoCard,
   GalleryEmptyState as VideoEmptyState,
 } from '@/pages/gallery/videos/list';
+import { AnnouncementEmptyState } from '@/pages/announcements/show';
+import { show as announcementShow } from '@/routes/announcements';
 import { index as documentsIndex } from '@/routes/documents';
 import { index as newsIndex } from '@/routes/news';
 import { index as photosIndex } from '@/routes/gallery/photos';
@@ -159,11 +160,15 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="mt-4 grid auto-rows-fr gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {news.map((news) => (
-                  <NewsCard key={news.id} news={news} />
-                ))}
-              </div>
+              {news.length > 0 ? (
+                <div className="mt-4 grid auto-rows-fr gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {news.map((news) => (
+                    <NewsCard key={news.id} news={news} />
+                  ))}
+                </div>
+              ) : (
+                <NewsEmptyState />
+              )}
             </div>
 
             <div className="m-0 block h-auto w-full p-0">
@@ -225,7 +230,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <aside className="sticky top-8 w-full shrink-0 lg:max-w-80">
+          <aside className="sticky top-24 w-full shrink-0 lg:max-w-80">
             <Card className="gap-4 p-6">
               <CardHeader className="p-0">
                 <CardTitle className="text-xl font-medium tracking-tight">
@@ -275,9 +280,7 @@ export default function HomePage() {
                     </InfiniteScroll>
                   </ScrollArea>
                 ) : (
-                  <p className="text-muted-foreground text-sm">
-                    No announcements found.
-                  </p>
+                  <AnnouncementEmptyState />
                 )}
               </CardContent>
             </Card>

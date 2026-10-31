@@ -7,6 +7,7 @@ import {
   DotIcon,
   MailIcon,
   UserIcon,
+  MegaphoneIcon,
 } from 'lucide-react';
 import {
   SiFacebook,
@@ -38,6 +39,13 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button, buttonVariants } from '@/components/ui/button';
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
 import { show as announcementShow } from '@/routes/announcements';
 import type { Announcement } from '@/types/announcement';
 
@@ -203,5 +211,21 @@ function ShareButtons({ announcement }: { announcement: Announcement }) {
         )}
       </Button>
     </div>
+  );
+}
+
+export function AnnouncementEmptyState() {
+  return (
+    <Empty className="mt-0 border border-solid">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <MegaphoneIcon />
+        </EmptyMedia>
+        <EmptyTitle>No announcements found</EmptyTitle>
+        <EmptyDescription>
+          There are no announcements to show here yet.
+        </EmptyDescription>
+      </EmptyHeader>
+    </Empty>
   );
 }

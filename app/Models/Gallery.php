@@ -7,9 +7,11 @@ use App\Enums\GalleryType;
 use App\Enums\SortByType;
 use App\Enums\StatusType;
 use App\Enums\TaxonomyType;
+use App\Observers\GalleryObserver;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use Database\Factories\GalleryFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -19,9 +21,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Vite;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Mews\Purifier\Casts\CleanHtml;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+#[ObservedBy([GalleryObserver::class])]
 class Gallery extends Model implements HasMedia, Viewable
 {
     /** @use HasFactory<GalleryFactory> */
@@ -71,7 +75,7 @@ class Gallery extends Model implements HasMedia, Viewable
         'title',
         'slug',
         'type',
-        'description',
+        'content',
         'video_url',
         'status',
         'published_at',
@@ -86,6 +90,7 @@ class Gallery extends Model implements HasMedia, Viewable
     {
         return [
             'type' => GalleryType::class,
+            'content' => CleanHtml::class,
             'published_at' => 'datetime',
             'status' => StatusType::class,
         ];
