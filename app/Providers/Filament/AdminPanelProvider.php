@@ -265,6 +265,7 @@ class AdminPanelProvider extends PanelProvider
                             ->model(Page::class),
                         StaticMenuPanel::make()
                             ->add('Home', '/')
+                            ->add('Placements', '/placements')
                             ->add('News', '/news')
                             ->add('Document', '/documents')
                             ->add('Photo', '/gallery/photos')

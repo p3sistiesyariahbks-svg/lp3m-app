@@ -13,6 +13,7 @@ use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/contact', 'contact')->name('contact');
+Route::inertia('/placements', 'placements/list')->name('placements.index');
 
 Route::get('/', HomeController::class)
     ->name('home');

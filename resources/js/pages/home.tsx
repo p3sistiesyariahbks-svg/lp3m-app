@@ -34,7 +34,7 @@ import {
 } from '@/pages/gallery/videos/list';
 import { AnnouncementEmptyState } from '@/pages/announcements/show';
 import { show as announcementShow } from '@/routes/announcements';
-import { index as documentsIndex } from '@/routes/documents';
+import { index as placementsIndex } from '@/routes/placements';
 import { index as newsIndex } from '@/routes/news';
 import { index as photosIndex } from '@/routes/gallery/photos';
 import { index as videosIndex } from '@/routes/gallery/videos';
@@ -79,13 +79,13 @@ export default function HomePage() {
 
             <div className="mt-12 flex items-center justify-center gap-4">
               <Link
-                href={documentsIndex()}
+                href={placementsIndex()}
                 className={cn(
                   buttonVariants({ size: 'lg' }),
                   'h-10 rounded-full px-5',
                 )}
               >
-                Lihat Dokumen
+                Explore Placements
               </Link>
 
               <Link

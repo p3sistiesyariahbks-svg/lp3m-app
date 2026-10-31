@@ -24,14 +24,15 @@ class MenuSeeder extends Seeder
             ->create();
 
         MenuItem::factory()
-            ->count(4)
+            ->count(5)
             ->staticMenu()
             ->for($header)
             ->state(new Sequence(
-                ['title' => 'Home', 'url' => '/'],
-                ['title' => 'News', 'url' => '/news'],
-                ['title' => 'Document', 'url' => '/documents'],
-                ['title' => 'Contact', 'url' => '/contact'],
+                ['title' => 'Home', 'url' => '/', 'order' => 0],
+                ['title' => 'Placements', 'url' => '/placements', 'order' => 2],
+                ['title' => 'News', 'url' => '/news', 'order' => 3],
+                ['title' => 'Document', 'url' => '/documents', 'order' => 4],
+                ['title' => 'Contact', 'url' => '/contact', 'order' => 6],
             ))
             ->create();
 
@@ -39,6 +40,10 @@ class MenuSeeder extends Seeder
             ->count(1)
             ->customText()
             ->for($header)
+            ->state([
+                'title' => 'Profile',
+                'order' => 1,
+            ])
             ->has(
                 MenuItem::factory()
                     ->count(10)
@@ -58,15 +63,18 @@ class MenuSeeder extends Seeder
         MenuItem::factory()
             ->customText()
             ->for($header)
-            ->state(['title' => 'Gallery'])
+            ->state([
+                'title' => 'Gallery',
+                'order' => 5,
+            ])
             ->has(
                 MenuItem::factory()
                     ->count(2)
                     ->staticMenu()
                     ->for($header)
                     ->state(new Sequence(
-                        ['title' => 'Photo', 'url' => '/gallery/photos'],
-                        ['title' => 'Video', 'url' => '/gallery/videos'],
+                        ['title' => 'Photo', 'url' => '/gallery/photos', 'order' => 0],
+                        ['title' => 'Video', 'url' => '/gallery/videos', 'order' => 1],
                     )),
                 'children',
             )
