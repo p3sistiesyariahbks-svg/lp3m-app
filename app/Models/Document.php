@@ -6,16 +6,21 @@ use Aliziodev\LaravelTaxonomy\Traits\HasTaxonomy;
 use App\Enums\SortByType;
 use App\Enums\StatusType;
 use App\Enums\TaxonomyType;
+use Closure;
+use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Str;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -23,7 +28,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Document extends Model implements HasMedia, Viewable
 {
     /** @use HasFactory<DocumentFactory> */
-    use HasFactory, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithViews, Userstamps;
+    use HasFactory, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -87,6 +92,16 @@ class Document extends Model implements HasMedia, Viewable
     }
 
     /**
+     * Get the document's slug.
+     */
+    protected function slugSource(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->slug ?: $this->title,
+        );
+    }
+
+    /**
      * Scope a query to only include document of a sort by type.
      */
     #[Scope]
@@ -99,6 +114,27 @@ class Document extends Model implements HasMedia, Viewable
             SortByType::TitleDesc => $query->orderByDesc('documents.title'),
             SortByType::Popular => $query->withCount('views')->orderByDesc('views_count'),
         };
+    }
+
+    /**
+     * Get the sluggable configuration for the model.
+     *
+     * @return array<string, array<string, bool|string|Closure>>
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'slug_source',
+                'onUpdate' => true,
+                'uniqueSuffix' => static fn (
+                    string $slug,
+                    string $separator,
+                    Collection $list,
+                    int $firstSuffix
+                ): string => Str::lower(Str::random(6)),
+            ],
+        ];
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\StatusType;
+use Closure;
+use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use Database\Factories\PageFactory;
@@ -10,9 +12,12 @@ use Datlechin\FilamentMenuBuilder\Contracts\MenuPanelable;
 use Filament\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichContent;
 use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Kisame76\FilamentAdvancedRichEditor\FileAttachmentProviders\SpatieMediaLibraryFileAttachmentProvider;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Mews\Purifier\Casts\CleanHtml;
@@ -22,7 +27,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Page extends Model implements HasMedia, HasRichContent, MenuPanelable, Viewable
 {
     /** @use HasFactory<PageFactory> */
-    use HasFactory, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Userstamps;
+    use HasFactory, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -83,6 +88,37 @@ class Page extends Model implements HasMedia, HasRichContent, MenuPanelable, Vie
             'content' => CleanHtml::class,
             'published_at' => 'datetime',
             'status' => StatusType::class,
+        ];
+    }
+
+    /**
+     * Get the page's slug.
+     */
+    protected function slugSource(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->slug ?: $this->title,
+        );
+    }
+
+    /**
+     * Get the sluggable configuration for the model.
+     *
+     * @return array<string, array<string, bool|string|Closure>>
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'slug_source',
+                'onUpdate' => true,
+                'uniqueSuffix' => static fn (
+                    string $slug,
+                    string $separator,
+                    Collection $list,
+                    int $firstSuffix
+                ): string => Str::lower(Str::random(6)),
+            ],
         ];
     }
 

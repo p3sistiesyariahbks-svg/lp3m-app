@@ -44,9 +44,11 @@ class GalleryVideoForm
                                         ->label('Title')
                                         ->autofocus()
                                         ->live(true)
-                                        ->afterStateUpdated(function (Get $get, Set $set) {
-                                            $slug = Str::slug($get('title'));
-                                            $set('slug', $slug);
+                                        ->afterStateUpdated(function (Get $get, Set $set, string $operation) {
+                                            if ($operation === 'create') {
+                                                $slug = Str::slug($get('title'));
+                                                $set('slug', $slug);
+                                            }
                                         }),
                                     TextInput::make('video_url')
                                         ->required()
@@ -72,7 +74,6 @@ class GalleryVideoForm
                                         ->alphaDash()
                                         ->minLength(3)
                                         ->maxLength(100)
-                                        ->unique(ignoreRecord: true)
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/gallery/videos/')
