@@ -11,8 +11,8 @@ export default defineConfig({
   plugins: lazyPlugins(() => [
     laravel({
       input: [
-        'resources/css/app.css',
         'resources/js/app.tsx',
+        'resources/css/app.css',
         'resources/css/filament/admin/theme.css',
       ],
       assets: ['resources/images/**', 'resources/fonts/**'],
