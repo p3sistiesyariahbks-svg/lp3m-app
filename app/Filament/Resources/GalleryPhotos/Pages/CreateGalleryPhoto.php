@@ -16,4 +16,12 @@ class CreateGalleryPhoto extends CreateRecord
 
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        $this->record->saveSEO([
+            'title' => $this->data['seo_title'],
+            'description' => $this->data['meta_description'],
+        ]);
+    }
 }

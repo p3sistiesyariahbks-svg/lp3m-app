@@ -17,10 +17,23 @@ class EditGalleryVideo extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['seo_title'] = $this->record->seoMeta?->title;
+        $data['meta_description'] = $this->record->seoMeta?->description;
+
+        return $data;
+    }
+
     protected function afterSave(): void
     {
         $this->refreshFormData([
             'slug',
+        ]);
+
+        $this->record->saveSEO([
+            'title' => $this->data['seo_title'],
+            'description' => $this->data['meta_description'],
         ]);
     }
 }

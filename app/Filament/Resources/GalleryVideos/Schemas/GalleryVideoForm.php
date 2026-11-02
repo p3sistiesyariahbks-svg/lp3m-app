@@ -82,13 +82,15 @@ class GalleryVideoForm
                                         Text::make('SEO Settings'),
                                         Group::make([
                                             TextInput::make('seo_title')
+                                                ->dehydrated(false)
                                                 ->nullable()
                                                 ->string()
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use post title.'),
+                                                ->belowContent('Leave empty to use video title.'),
                                             Textarea::make('meta_description')
+                                                ->dehydrated(false)
                                                 ->nullable()
                                                 ->string()
                                                 ->minLength(3)

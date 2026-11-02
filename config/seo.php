@@ -304,7 +304,7 @@ return [
          * SEO_INDEXING_GUARD=true to arm the guard; SEO_INDEXING_GUARD=false to
          * disable it — either way it is one line.
          */
-        'enabled' => env('SEO_INDEXING_GUARD', false),
+        'enabled' => env('SEO_INDEXING_GUARD', true),
 
         /*
          * The environments allowed to be indexed. When app()->environment() is
@@ -437,7 +437,7 @@ return [
     */
 
     'resolver' => [
-        'blank_is_unset' => env('SEO_BLANK_IS_UNSET', false),
+        'blank_is_unset' => env('SEO_BLANK_IS_UNSET', true),
     ],
 
     /*
@@ -706,7 +706,7 @@ return [
              * Emit the <?xml-stylesheet?> reference and register the route that
              * serves the .xsl. When false, sitemaps are plain XML again.
              */
-            'enabled' => env('SEO_SITEMAP_STYLESHEET', true),
+            'enabled' => env('SEO_SITEMAP_STYLESHEET', false),
 
             /*
              * The href written into the <?xml-stylesheet?> instruction. Leave
