@@ -15,6 +15,7 @@ use App\Models\Partner;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Rankbeam\Seo\Data\SEOData;
 
 class HomeController extends Controller
 {
@@ -81,6 +82,9 @@ class HomeController extends Controller
             'videos' => $videos,
             'announcements' => $announcements,
             'partners' => $partners,
-        ]);
+        ])->withSeo(new SEOData(
+            title: 'Home',
+            description: 'Advancing knowledge and serving communities through research and collaboration.',
+        ));
     }
 }

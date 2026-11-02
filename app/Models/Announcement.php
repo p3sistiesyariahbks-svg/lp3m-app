@@ -8,19 +8,25 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use Database\Factories\AnnouncementFactory;
+use Filament\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichContent;
+use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Kisame76\FilamentAdvancedRichEditor\FileAttachmentProviders\SpatieMediaLibraryFileAttachmentProvider;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Mews\Purifier\Casts\CleanHtml;
+use Rankbeam\Seo\Traits\HasSEO;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Announcement extends Model implements Viewable
+class Announcement extends Model implements HasMedia, HasRichContent, Viewable
 {
     /** @use HasFactory<AnnouncementFactory> */
-    use HasFactory, HasUuids, InteractsWithViews, Sluggable, Userstamps;
+    use HasFactory, HasSEO, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -113,5 +119,22 @@ class Announcement extends Model implements Viewable
                 ): string => Str::lower(Str::random(6)),
             ],
         ];
+    }
+
+    /**
+     * Get the canonical URL of the announcement for SEO.
+     */
+    public function getUrlForSEO(): string
+    {
+        return route('announcements.show', $this);
+    }
+
+    /**
+     * Setup rich editor content.
+     */
+    public function setUpRichContent(): void
+    {
+        $this->registerRichContent('content')
+            ->fileAttachmentProvider(SpatieMediaLibraryFileAttachmentProvider::make());
     }
 }

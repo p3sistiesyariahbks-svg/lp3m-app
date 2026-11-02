@@ -1,4 +1,5 @@
 import type { Paginated } from '@/types/pagination';
+import type { SEO } from '@/types/seo';
 
 export type Category = {
   id: string;
@@ -13,6 +14,7 @@ export type Filters = {
 };
 
 export type PageProps<T> = {
+  seo: SEO;
   items: Paginated<T>;
   category: Category;
   categories: Category[];

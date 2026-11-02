@@ -20,6 +20,6 @@ class AnnouncementController extends Controller
 
         return Inertia::render('announcements/show', [
             'announcement' => $announcement,
-        ]);
+        ])->withSeo($announcement->resource);
     }
 }

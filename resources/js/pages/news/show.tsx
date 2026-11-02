@@ -49,11 +49,14 @@ import {
   show as newsShow,
 } from '@/routes/news';
 import type { News } from '@/types/news';
+import type { SEO } from '@/types/seo';
 
 export default function NewsShowPage({
+  seo,
   news,
   suggestions,
 }: {
+  seo: SEO;
   news: News;
   suggestions: News[];
 }) {
@@ -62,7 +65,20 @@ export default function NewsShowPage({
 
   return (
     <React.Fragment>
-      <Head title="News Show" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <article className="bg-background border-b py-12 lg:py-16">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8">

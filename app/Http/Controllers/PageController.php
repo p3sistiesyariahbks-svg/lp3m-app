@@ -21,6 +21,6 @@ class PageController extends Controller
 
         return Inertia::render('pages/show', [
             'page' => $page,
-        ]);
+        ])->withSeo($page->resource);
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Resources\NewsResource;
 use App\Models\Taxonomy;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Rankbeam\Seo\Data\SEOData;
 
 class CategoryController extends Controller
 {
@@ -74,6 +75,9 @@ class CategoryController extends Controller
             'category' => $category,
             'categories' => $categories,
             'filters' => ['sort_by' => $sortBy],
-        ]);
+        ])->withSeo(new SEOData(
+            title: $category->name,
+            description: $category->description,
+        ));
     }
 }

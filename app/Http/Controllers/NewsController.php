@@ -12,6 +12,7 @@ use App\Models\Taxonomy;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Rankbeam\Seo\Data\SEOData;
 
 class NewsController extends Controller
 {
@@ -47,7 +48,10 @@ class NewsController extends Controller
             'news' => $news,
             'categories' => $categories,
             'filters' => ['sort_by' => $sortBy],
-        ]);
+        ])->withSeo(new SEOData(
+            title: 'News',
+            description: 'Fresh stories and updates, all in one place.',
+        ));
     }
 
     /**
@@ -74,6 +78,6 @@ class NewsController extends Controller
         return Inertia::render('news/show', [
             'news' => $news,
             'suggestions' => $suggestions,
-        ]);
+        ])->withSeo($news->resource);
     }
 }

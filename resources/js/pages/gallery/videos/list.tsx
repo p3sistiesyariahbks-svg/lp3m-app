@@ -48,7 +48,7 @@ export const sorts = [
 ] as const;
 
 export default function GalleryVideoListPage() {
-  const { galleries, categories, filters } = usePage<PageProps>().props;
+  const { seo, galleries, categories, filters } = usePage<PageProps>().props;
 
   function handleSortBy(value: string | null) {
     router.get(
@@ -67,7 +67,20 @@ export default function GalleryVideoListPage() {
 
   return (
     <React.Fragment>
-      <Head title="Videos" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <section className="bg-muted border-b py-12 lg:py-16">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8">

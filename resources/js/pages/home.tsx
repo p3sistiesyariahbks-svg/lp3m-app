@@ -48,12 +48,25 @@ const statistics = [
 ] as const;
 
 export default function HomePage() {
-  const { news, photos, videos, announcements, partners } =
+  const { seo, news, photos, videos, announcements, partners } =
     usePage<PageProps>().props;
 
   return (
     <React.Fragment>
-      <Head title="Home" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <section className="bg-muted/30 relative isolate flex min-h-screen items-center justify-center overflow-hidden border-b py-12 lg:py-16">
         <div className="pointer-events-none absolute inset-0 -z-10 [background-image:radial-gradient(var(--border)_2px,transparent_2px)] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)] [background-size:24px_24px]" />

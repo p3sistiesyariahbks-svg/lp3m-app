@@ -22,13 +22,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Rankbeam\Seo\Traits\HasSEO;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Document extends Model implements HasMedia, Viewable
 {
     /** @use HasFactory<DocumentFactory> */
-    use HasFactory, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithViews, Sluggable, Userstamps;
+    use HasFactory, HasSEO, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -135,6 +136,22 @@ class Document extends Model implements HasMedia, Viewable
                 ): string => Str::lower(Str::random(6)),
             ],
         ];
+    }
+
+    /**
+     * Get the canonical URL of the document for SEO.
+     */
+    public function getUrlForSEO(): string
+    {
+        return route('documents.show', $this);
+    }
+
+    /**
+     * Get the image of the document for SEO.
+     */
+    public function getSEOImage(): ?string
+    {
+        return $this->getFirstMediaUrl('thumbnails');
     }
 
     /**

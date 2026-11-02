@@ -32,6 +32,7 @@ import type { PageProps } from '@/types/category';
 
 export default function NewsCategoryPage() {
   const {
+    seo,
     items: news,
     category,
     categories,
@@ -55,7 +56,20 @@ export default function NewsCategoryPage() {
 
   return (
     <React.Fragment>
-      <Head title="News" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <section className="bg-muted border-b py-12 lg:py-16">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8">

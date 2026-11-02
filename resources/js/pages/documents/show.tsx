@@ -9,6 +9,7 @@ import { XlsxViewerPreview } from '@/components/extend/xlsx-viewer';
 import { PptxViewerPreview } from '@/components/extend/pptx-viewer';
 import type { Document } from '@/types/document';
 import type { Media } from '@/types/media';
+import type { SEO } from '@/types/seo';
 
 const mimeType = {
   pdf: 'application/pdf',
@@ -85,10 +86,29 @@ function DocumentViewer({ media }: { media: Media }) {
   }
 }
 
-export default function DocumentShowPage({ document }: { document: Document }) {
+export default function DocumentShowPage({
+  seo,
+  document,
+}: {
+  seo: SEO;
+  document: Document;
+}) {
   return (
     <React.Fragment>
-      <Head title="Document Show" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <DocumentViewer media={document.document} />
     </React.Fragment>

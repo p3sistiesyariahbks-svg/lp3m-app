@@ -17,17 +17,19 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use Kisame76\FilamentAdvancedRichEditor\FileAttachmentProviders\SpatieMediaLibraryFileAttachmentProvider;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Mews\Purifier\Casts\CleanHtml;
+use Rankbeam\Seo\Traits\HasSEO;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Page extends Model implements HasMedia, HasRichContent, MenuPanelable, Viewable
 {
     /** @use HasFactory<PageFactory> */
-    use HasFactory, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Sluggable, Userstamps;
+    use HasFactory, HasSEO, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -123,6 +125,22 @@ class Page extends Model implements HasMedia, HasRichContent, MenuPanelable, Vie
     }
 
     /**
+     * Get the canonical URL of the page for SEO.
+     */
+    public function getUrlForSEO(): string
+    {
+        return route('pages.show', $this);
+    }
+
+    /**
+     * Get the image of the page for SEO.
+     */
+    public function getSEOImage(): ?string
+    {
+        return $this->getFirstMediaUrl('thumbnails');
+    }
+
+    /**
      * Get menu panel name.
      */
     public function getMenuPanelName(): string
@@ -152,6 +170,17 @@ class Page extends Model implements HasMedia, HasRichContent, MenuPanelable, Vie
     public function getMenuPanelQuery(): Builder
     {
         return static::query()->where('status', StatusType::Published);
+    }
+
+    /**
+     * Register the media collections for this model.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('thumbnails')
+            ->useFallbackUrl(Vite::asset('/images/placeholder.webp'))
+            ->useFallbackPath(public_path('/images/placeholder.webp'));
     }
 
     /**

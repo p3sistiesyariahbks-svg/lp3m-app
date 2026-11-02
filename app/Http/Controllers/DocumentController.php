@@ -12,6 +12,7 @@ use App\Models\Taxonomy;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Rankbeam\Seo\Data\SEOData;
 
 class DocumentController extends Controller
 {
@@ -47,7 +48,10 @@ class DocumentController extends Controller
             'documents' => $documents,
             'categories' => $categories,
             'filters' => ['sort_by' => $sortBy],
-        ]);
+        ])->withSeo(new SEOData(
+            title: 'Documents',
+            description: 'Find reports, forms, and resources all in one place.',
+        ));
     }
 
     /**
@@ -62,6 +66,6 @@ class DocumentController extends Controller
 
         return Inertia::render('documents/show', [
             'document' => $document,
-        ]);
+        ])->withSeo($document->resource);
     }
 }

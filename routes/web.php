@@ -4,16 +4,15 @@ use App\Enums\GalleryType;
 use App\Enums\TaxonomyType;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GalleryPhotoController;
 use App\Http\Controllers\GalleryVideoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PlacementController;
 use Illuminate\Support\Facades\Route;
-
-Route::inertia('/contact', 'contact')->name('contact');
-Route::inertia('/placements', 'placements/list')->name('placements.index');
 
 Route::get('/', HomeController::class)
     ->name('home');
@@ -21,6 +20,8 @@ Route::get('pages/{page:slug}', PageController::class)
     ->name('pages.show');
 Route::get('announcements/{announcement:slug}', AnnouncementController::class)
     ->name('announcements.show');
+Route::get('/contact', ContactController::class)
+    ->name('contact');
 
 Route::get('news/category/{category:slug}', CategoryController::class)
     ->setDefaults([
@@ -48,6 +49,11 @@ Route::get('gallery/videos/category/{category:slug}', CategoryController::class)
         'gallery' => GalleryType::Videos,
     ])
     ->name('gallery.videos.category');
+
+Route::controller(PlacementController::class)->group(function () {
+    Route::get('/placements', 'index')
+        ->name('placements.index');
+});
 
 Route::controller(NewsController::class)->group(function () {
     Route::get('news', 'index')

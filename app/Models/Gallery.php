@@ -13,6 +13,8 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use Database\Factories\GalleryFactory;
+use Filament\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichContent;
+use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,16 +27,18 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
+use Kisame76\FilamentAdvancedRichEditor\FileAttachmentProviders\SpatieMediaLibraryFileAttachmentProvider;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Mews\Purifier\Casts\CleanHtml;
+use Rankbeam\Seo\Traits\HasSEO;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 #[ObservedBy([GalleryObserver::class])]
-class Gallery extends Model implements HasMedia, Viewable
+class Gallery extends Model implements HasMedia, HasRichContent, Viewable
 {
     /** @use HasFactory<GalleryFactory> */
-    use HasFactory, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithViews, Sluggable, Userstamps;
+    use HasFactory, HasSEO, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -148,6 +152,28 @@ class Gallery extends Model implements HasMedia, Viewable
     }
 
     /**
+     * Get the canonical URL of the gallery for SEO.
+     */
+    public function getUrlForSEO(): string
+    {
+        return match ($this->type) {
+            GalleryType::Photos => route('gallery.photos.show', $this),
+            GalleryType::Videos => route('gallery.videos.show', $this),
+        };
+    }
+
+    /**
+     * Get the image of the gallery for SEO.
+     */
+    public function getSEOImage(): ?string
+    {
+        return match ($this->type) {
+            GalleryType::Photos => $this->photos?->first()?->getFirstMediaUrl('images'),
+            GalleryType::Videos => $this->getFirstMediaUrl('thumbnails'),
+        };
+    }
+
+    /**
      * Register the media collections for this model.
      */
     public function registerMediaCollections(): void
@@ -156,6 +182,15 @@ class Gallery extends Model implements HasMedia, Viewable
             ->addMediaCollection('thumbnails')
             ->useFallbackUrl(Vite::asset('/images/placeholder.webp'))
             ->useFallbackPath(public_path('/images/placeholder.webp'));
+    }
+
+    /**
+     * Setup rich editor content.
+     */
+    public function setUpRichContent(): void
+    {
+        $this->registerRichContent('content')
+            ->fileAttachmentProvider(SpatieMediaLibraryFileAttachmentProvider::make());
     }
 
     /**

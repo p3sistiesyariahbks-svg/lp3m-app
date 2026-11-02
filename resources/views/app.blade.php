@@ -12,7 +12,15 @@
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.tsx'])
 
-        <x-inertia::head />
+        <x-inertia::head>
+            @if(isset($seoModel))
+                @seo($seoModel)
+            @elseif(isset($seoRoute))
+                @seoForRoute($seoRoute)
+            @else
+                @seo(null)
+            @endif
+        </x-inertia::head>
     </head>
     <body class="font-sans antialiased">
         <x-inertia::app />

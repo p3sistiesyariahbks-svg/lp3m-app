@@ -9,10 +9,25 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 
-export default function PlacementsListPage() {
+import type { SEO } from '@/types/seo';
+
+export default function PlacementsListPage({ seo }: { seo: SEO }) {
   return (
     <React.Fragment>
-      <Head title="Placements" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <section className="bg-muted border-b py-12 lg:py-16">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8">

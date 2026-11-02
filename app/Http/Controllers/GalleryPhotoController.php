@@ -13,6 +13,7 @@ use App\Models\Taxonomy;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Rankbeam\Seo\Data\SEOData;
 
 class GalleryPhotoController extends Controller
 {
@@ -51,7 +52,10 @@ class GalleryPhotoController extends Controller
             'galleries' => $gallery,
             'categories' => $categories,
             'filters' => ['sort_by' => $sortBy],
-        ]);
+        ])->withSeo(new SEOData(
+            title: 'Photos',
+            description: 'Documentation of research and community service activities.',
+        ));
     }
 
     /**
@@ -81,6 +85,6 @@ class GalleryPhotoController extends Controller
         return Inertia::render('gallery/photos/show', [
             'gallery' => $gallery,
             'suggestions' => $suggestions,
-        ]);
+        ])->withSeo($gallery->resource);
     }
 }

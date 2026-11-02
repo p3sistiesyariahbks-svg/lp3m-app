@@ -1,6 +1,7 @@
 import type { Category } from '@/types/category';
 import type { Media } from '@/types/media';
 import type { Paginated } from '@/types/pagination';
+import type { SEO } from '@/types/seo';
 
 export type StatusType = 'draft' | 'published' | 'scheduled';
 
@@ -23,6 +24,7 @@ export type Filters = {
 };
 
 export type PageProps = {
+  seo: SEO;
   news: Paginated<News>;
   categories: Category[];
   filters: Filters;

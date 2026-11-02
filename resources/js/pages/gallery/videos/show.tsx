@@ -50,11 +50,14 @@ import {
   show as galleryShow,
 } from '@/routes/gallery/videos';
 import type { Gallery } from '@/types/gallery';
+import type { SEO } from '@/types/seo';
 
 export default function GalleryVideoShowPage({
+  seo,
   gallery,
   suggestions,
 }: {
+  seo: SEO;
   gallery: Gallery;
   suggestions: Gallery[];
 }) {
@@ -63,7 +66,20 @@ export default function GalleryVideoShowPage({
 
   return (
     <React.Fragment>
-      <Head title="Videos" />
+      <Head title={seo.title}>
+        {seo.meta.map((meta) => (
+          <meta key={meta['head-key']} {...meta} />
+        ))}
+        {seo.link.map((link) => (
+          <link
+            key={link['head-key']}
+            head-key={link['head-key']}
+            rel={link.rel}
+            href={link.href}
+            {...(link.hreflang ? { hrefLang: link.hreflang } : {})}
+          />
+        ))}
+      </Head>
 
       <article className="bg-background border-b py-12 lg:py-16">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 sm:px-6 lg:px-8">

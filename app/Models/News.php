@@ -12,6 +12,8 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use Database\Factories\NewsFactory;
+use Filament\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichContent;
+use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,16 +25,18 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
+use Kisame76\FilamentAdvancedRichEditor\FileAttachmentProviders\SpatieMediaLibraryFileAttachmentProvider;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Mews\Purifier\Casts\CleanHtml;
+use Rankbeam\Seo\Traits\HasSEO;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 #[ObservedBy([NewsObserver::class])]
-class News extends Model implements HasMedia, Viewable
+class News extends Model implements HasMedia, HasRichContent, Viewable
 {
     /** @use HasFactory<NewsFactory> */
-    use HasFactory, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithViews, Sluggable, Userstamps;
+    use HasFactory, HasSEO, HasTaxonomy, HasUuids, InteractsWithMedia, InteractsWithRichContent, InteractsWithViews, Sluggable, Userstamps;
 
     /**
      * The table associated with the model.
@@ -143,6 +147,22 @@ class News extends Model implements HasMedia, Viewable
     }
 
     /**
+     * Get the canonical URL of the news for SEO.
+     */
+    public function getUrlForSEO(): string
+    {
+        return route('news.show', $this);
+    }
+
+    /**
+     * Get the image of the news for SEO.
+     */
+    public function getSEOImage(): ?string
+    {
+        return $this->getFirstMediaUrl('thumbnails');
+    }
+
+    /**
      * Register the media collections for this model.
      */
     public function registerMediaCollections(): void
@@ -151,6 +171,15 @@ class News extends Model implements HasMedia, Viewable
             ->addMediaCollection('thumbnails')
             ->useFallbackUrl(Vite::asset('/images/placeholder.webp'))
             ->useFallbackPath(public_path('/images/placeholder.webp'));
+    }
+
+    /**
+     * Setup rich editor content.
+     */
+    public function setUpRichContent(): void
+    {
+        $this->registerRichContent('content')
+            ->fileAttachmentProvider(SpatieMediaLibraryFileAttachmentProvider::make());
     }
 
     /**
