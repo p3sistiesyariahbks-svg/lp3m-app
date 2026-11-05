@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { cn } from 'cn';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ExternalLink, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
@@ -14,35 +14,40 @@ import {
   MarkerTooltip,
 } from '@/components/ui/map';
 import { buttonVariants } from '@/components/ui/button';
-import type { ContactInfo } from '@/types/contact';
-import type { SEO } from '@/types/seo';
+import type { ContactInfo, PageProps } from '@/types/contact';
+import type { GeneralSettings } from '@/types/settings';
 
-const contactItems: ContactInfo[] = [
-  {
-    icon: MailIcon,
-    title: 'Email',
-    href: 'mailto:akashmoradiya3444@gmail.com',
-    label: 'akashmoradiya3444@gmail.com',
-  },
-  {
-    icon: MapPinIcon,
-    title: 'Office',
-    href: 'https://maps.app.goo.gl/NRkm4KwmghLdgtTm6',
-    label: (
-      <>
-        100 Smith Street Collingwood <br /> VIC 3066 AU
-      </>
-    ),
-  },
-  {
-    icon: PhoneIcon,
-    title: 'Phone',
-    href: 'tel:+15550000000',
-    label: '+1 (555) 000-0000',
-  },
-];
+function getGoogleMapsUrl(latitude: number, longitude: number) {
+  return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+}
 
-export default function ContactPage({ seo }: { seo: SEO }) {
+export default function ContactPage() {
+  const {
+    seo,
+    settings: { general },
+  } = usePage<PageProps>().props;
+
+  const contactItems: ContactInfo[] = [
+    {
+      icon: MailIcon,
+      title: 'Email',
+      href: `mailto:${general.support_email}`,
+      label: general.support_email || '-',
+    },
+    {
+      icon: MapPinIcon,
+      title: 'Office',
+      href: getGoogleMapsUrl(general.latitude, general.longitude),
+      label: general.company_office || '-',
+    },
+    {
+      icon: PhoneIcon,
+      title: 'Phone',
+      href: `tel:${general.support_phone}`,
+      label: general.support_phone || '-',
+    },
+  ];
+
   return (
     <React.Fragment>
       <Head title={seo.title}>
@@ -82,7 +87,7 @@ export default function ContactPage({ seo }: { seo: SEO }) {
             </div>
 
             <div className="mt-8 flex items-center justify-between gap-4">
-              <MapInfoLocation />
+              <MapInfoLocation general={general} />
             </div>
           </div>
         </div>
@@ -91,8 +96,8 @@ export default function ContactPage({ seo }: { seo: SEO }) {
   );
 }
 
-function MapInfoLocation() {
-  const coordinate = [102.14967581349075, 1.466922671632213] as [
+function MapInfoLocation({ general }: { general: GeneralSettings }) {
+  const coordinate = [general.longitude, general.latitude] as [
     number,
     number,
   ];
@@ -124,7 +129,7 @@ function MapInfoLocation() {
             <MarkerContent>
               <MapPinIcon />
               <MarkerLabel className="font-bold" position="bottom">
-                HQ Office
+                {general.site_name}
               </MarkerLabel>
             </MarkerContent>
 
@@ -141,22 +146,25 @@ function MapInfoLocation() {
                       className="bg-muted size-full object-cover"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=300&h=200&fit=crop"
-                      alt="HQ Office"
+                      alt={general.site_name}
                     />
                   </AspectRatio>
                 </CardHeader>
 
                 <CardContent className="flex flex-col p-2">
                   <h3 className="mt-0 text-sm text-xl font-medium tracking-[-0.02em]">
-                    HQ Office
+                    {general.site_name}
                   </h3>
 
                   <p className="text-muted-foreground mt-2 text-xs">
-                    100 Smith Street Collingwood <br /> VIC 3066 AU
+                    {general.company_office}
                   </p>
 
                   <Link
-                    href="https://maps.app.goo.gl/NRkm4KwmghLdgtTm6"
+                    href={getGoogleMapsUrl(
+                      general.latitude,
+                      general.longitude,
+                    )}
                     className={cn(
                       buttonVariants({ size: 'sm' }),
                       'mt-4 w-full shadow-none',
@@ -185,13 +193,13 @@ function ContactInfoItem({ item }: { item: ContactInfo }) {
       <div className="min-w-0 flex-1 space-y-2">
         <h3 className="text-lg font-medium">{item.title}</h3>
 
-        <a
+        <Link
           href={item.href}
-          className="text-muted-foreground break-all"
+          className="text-muted-foreground wrap-anywhere"
           target="_blank"
         >
           {item.label}
-        </a>
+        </Link>
       </div>
     </div>
   );

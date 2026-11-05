@@ -35,6 +35,7 @@ class NewsTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('published_at')
+                    ->dateTime()
                     ->placeholder('Unpublished')
                     ->searchable()
                     ->sortable(),

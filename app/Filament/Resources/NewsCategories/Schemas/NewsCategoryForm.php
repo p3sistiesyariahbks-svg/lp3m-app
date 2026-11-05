@@ -49,13 +49,11 @@ class NewsCategoryForm
                             ->alphaDash()
                             ->minLength(3)
                             ->maxLength(100)
-                            ->unique(ignoreRecord: true)
                             ->validationAttribute('url slug')
                             ->label('URL Slug')
                             ->prefix('/category/')
-                            ->disabled()
                             ->visibleOn('edit')
-                            ->belowContent('Auto-generated from name'),
+                            ->helperText('Auto-generated from name'),
                     ]),
             ]);
     }

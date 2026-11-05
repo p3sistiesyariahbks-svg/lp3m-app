@@ -3,14 +3,11 @@
 namespace App\Settings;
 
 use App\Enums\MailDriver;
-use App\Enums\MailEncryption;
 use Spatie\LaravelSettings\Settings;
 use Spatie\LaravelSettings\SettingsCasts\EnumCast;
 
 class EmailSettings extends Settings
 {
-    public bool $enable_email;
-
     public MailDriver $mail_driver;
 
     public ?string $postmark_api_key;
@@ -25,8 +22,6 @@ class EmailSettings extends Settings
 
     public ?string $smtp_password;
 
-    public MailEncryption $encryption;
-
     public ?string $from_email_address;
 
     public ?string $from_name;
@@ -40,7 +35,6 @@ class EmailSettings extends Settings
     {
         return [
             'mail_driver' => EnumCast::class,
-            'encryption' => EnumCast::class,
         ];
     }
 

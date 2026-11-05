@@ -55,7 +55,7 @@ class AnnouncementForm
                                         ->headingLevels([1, 2, 3, 4, 5, 6])
                                         ->fileAttachmentsMaxSize(2048)
                                         ->resizableImages()
-                                        ->belowContent('Use the toolbar to format text, add headings, lists, links, and images.'),
+                                        ->helperText('Use the toolbar to format text, add headings, lists, links, and images.'),
                                 ]),
                             Section::make('Advanced Settings')
                                 ->schema([
@@ -67,7 +67,7 @@ class AnnouncementForm
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/announcements/')
-                                        ->belowContent('Use only lowercase letters, numbers, and hyphens.'),
+                                        ->helperText('Use only lowercase letters, numbers, and hyphens.'),
                                     Group::make([
                                         Text::make('SEO Settings'),
                                         Group::make([
@@ -78,7 +78,7 @@ class AnnouncementForm
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use announcement title.'),
+                                                ->helperText('Leave empty to use announcement title.'),
                                             Textarea::make('meta_description')
                                                 ->dehydrated(false)
                                                 ->nullable()
@@ -87,7 +87,7 @@ class AnnouncementForm
                                                 ->maxLength(255)
                                                 ->label('Meta Description')
                                                 ->autosize()
-                                                ->belowContent('Recommended: 150-160 characters.'),
+                                                ->helperText('Recommended: 150-160 characters.'),
                                         ])
                                             ->dense(false),
                                     ])
@@ -124,7 +124,7 @@ class AnnouncementForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The announcement will be published automatically at this date and time')
+                                        ->helperText('The announcement will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                         ]),

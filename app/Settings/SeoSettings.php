@@ -10,9 +10,11 @@ class SeoSettings extends Settings
 
     public ?string $title_suffix;
 
-    public ?string $default_meta_description;
+    public ?string $meta_description;
 
-    public ?string $default_social_image;
+    public ?string $og_image;
+
+    public array $verification;
 
     public static function group(): string
     {

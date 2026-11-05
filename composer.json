@@ -7,7 +7,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
-        "aliziodev/laravel-taxonomy": "^2.12",
+        "aliziodev/laravel-taxonomy": "^2.13",
+        "azgasim/filament-unsaved-changes-modal": "*",
         "caresome/filament-auth-designer": "^3.1",
         "cviebrock/eloquent-sluggable": "^13.0",
         "cybercog/laravel-ban": "^4.11",
@@ -29,7 +30,6 @@
         "rankbeam/laravel-seo": "^3.21",
         "soundasleep/html2text": "^2.1",
         "spatie/laravel-sitemap": "^8.2",
-        "spykapps/theme-edinburgh": "^1.0",
         "stechstudio/filament-impersonate": "^5.6",
         "teknyo/laravel-locale-helper": "^1.0",
         "waguilar33/filament-guardian": "^1.12",

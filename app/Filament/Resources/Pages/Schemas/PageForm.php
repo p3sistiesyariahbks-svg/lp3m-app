@@ -56,7 +56,7 @@ class PageForm
                                         ->headingLevels([1, 2, 3, 4, 5, 6])
                                         ->fileAttachmentsMaxSize(2048)
                                         ->resizableImages()
-                                        ->belowContent('Use the toolbar to format text, add headings, lists, links, and images.'),
+                                        ->helperText('Use the toolbar to format text, add headings, lists, links, and images.'),
                                 ]),
                             Section::make('Advanced Settings')
                                 ->schema([
@@ -68,7 +68,7 @@ class PageForm
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/pages/')
-                                        ->belowContent('Use only lowercase letters, numbers, and hyphens.'),
+                                        ->helperText('Use only lowercase letters, numbers, and hyphens.'),
                                     Group::make([
                                         Text::make('SEO Settings'),
                                         Group::make([
@@ -79,7 +79,7 @@ class PageForm
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use page title.'),
+                                                ->helperText('Leave empty to use page title.'),
                                             Textarea::make('meta_description')
                                                 ->dehydrated(false)
                                                 ->nullable()
@@ -88,7 +88,7 @@ class PageForm
                                                 ->maxLength(255)
                                                 ->label('Meta Description')
                                                 ->autosize()
-                                                ->belowContent('Recommended: 150-160 characters.'),
+                                                ->helperText('Recommended: 150-160 characters.'),
                                         ])
                                             ->dense(false),
                                     ])
@@ -125,7 +125,7 @@ class PageForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The page will be published automatically at this date and time')
+                                        ->helperText('The page will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                             Section::make('Featured Image')
@@ -138,7 +138,10 @@ class PageForm
                                         ->hiddenLabel()
                                         ->imageEditor()
                                         ->collection('thumbnails')
-                                        ->belowContent('This image appears in page previews and social media shares.'),
+                                        ->disk('public')
+                                        ->visibility('public')
+                                        ->downloadable()
+                                        ->helperText('This image appears in page previews and social media shares.'),
                                 ]),
                         ])
                             ->columnSpan(1),

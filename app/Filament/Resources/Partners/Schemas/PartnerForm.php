@@ -45,13 +45,14 @@ class PartnerForm
                                         ->multiple(false)
                                         ->disk('public')
                                         ->visibility('public')
-                                        ->belowContent('This image appears in the partners section.'),
+                                        ->downloadable()
+                                        ->helperText('This image appears in the partners section.'),
                                     TextInput::make('url')
                                         ->required()
                                         ->activeUrl()
                                         ->label('URL')
                                         ->placeholder('https://example.com')
-                                        ->belowContent('Make sure the URL is publicly accessible.'),
+                                        ->helperText('Make sure the URL is publicly accessible.'),
                                 ]),
                         ])
                             ->columnSpan(2),
@@ -83,7 +84,7 @@ class PartnerForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The partner will be published automatically at this date and time')
+                                        ->helperText('The partner will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                         ]),

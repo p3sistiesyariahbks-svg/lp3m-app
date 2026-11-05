@@ -16,4 +16,11 @@ class EditDocumentCategory extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $this->refreshFormData([
+            'slug',
+        ]);
+    }
 }

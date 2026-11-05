@@ -42,7 +42,7 @@ class ManageSocialLinks extends SettingsPage
                             ->maxLength(100)
                             ->label('Twitter/X Handle')
                             ->placeholder('@yourhandle')
-                            ->belowContent('Include the @ symbol.'),
+                            ->helperText('Include the @ symbol.'),
                         TextInput::make('instagram')
                             ->nullable()
                             ->string()

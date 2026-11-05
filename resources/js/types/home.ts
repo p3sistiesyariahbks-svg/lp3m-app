@@ -19,4 +19,5 @@ export type PageProps = {
   videos: Gallery[];
   announcements: Paginated<Announcement>;
   partners: Partner[];
+  [key: string]: unknown;
 };

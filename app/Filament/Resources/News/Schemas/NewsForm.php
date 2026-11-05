@@ -59,7 +59,7 @@ class NewsForm
                                         ->headingLevels([1, 2, 3, 4, 5, 6])
                                         ->fileAttachmentsMaxSize(2048)
                                         ->resizableImages()
-                                        ->belowContent('Use the toolbar to format text, add headings, lists, links, and images.'),
+                                        ->helperText('Use the toolbar to format text, add headings, lists, links, and images.'),
                                 ]),
                             Section::make('Advanced Settings')
                                 ->schema([
@@ -71,7 +71,7 @@ class NewsForm
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/news/')
-                                        ->belowContent('Use only lowercase letters, numbers, and hyphens.'),
+                                        ->helperText('Use only lowercase letters, numbers, and hyphens.'),
                                     Group::make([
                                         Text::make('SEO Settings'),
                                         Group::make([
@@ -82,7 +82,7 @@ class NewsForm
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use news title.'),
+                                                ->helperText('Leave empty to use news title.'),
                                             Textarea::make('meta_description')
                                                 ->dehydrated(false)
                                                 ->nullable()
@@ -91,7 +91,7 @@ class NewsForm
                                                 ->maxLength(255)
                                                 ->label('Meta Description')
                                                 ->autosize()
-                                                ->belowContent('Recommended: 150-160 characters.'),
+                                                ->helperText('Recommended: 150-160 characters.'),
                                         ])
                                             ->dense(false),
                                     ])
@@ -128,7 +128,7 @@ class NewsForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The news will be published automatically at this date and time')
+                                        ->helperText('The news will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                             Section::make('Featured Image')
@@ -144,7 +144,8 @@ class NewsForm
                                         ->multiple(false)
                                         ->disk('public')
                                         ->visibility('public')
-                                        ->belowContent('This image appears in news previews and social media shares.'),
+                                        ->downloadable()
+                                        ->helperText('This image appears in news previews and social media shares.'),
                                 ]),
                             Section::make('Categories')
                                 ->schema([

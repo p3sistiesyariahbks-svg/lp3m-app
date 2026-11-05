@@ -65,13 +65,14 @@ class GalleryPhotoForm
                                                 ->collection('images')
                                                 ->multiple(false)
                                                 ->disk('public')
-                                                ->visibility('public'),
+                                                ->visibility('public')
+                                                ->downloadable(),
                                             TextInput::make('alt')
                                                 ->nullable()
                                                 ->string()
                                                 ->minLength(3)
                                                 ->maxLength(100)
-                                                ->label('Image Alt')
+                                                ->label('Image Alt Text')
                                                 ->live(onBlur: true),
                                         ])
                                         ->label('Images')
@@ -90,7 +91,7 @@ class GalleryPhotoForm
                                         ->headingLevels([1, 2, 3, 4, 5, 6])
                                         ->fileAttachmentsMaxSize(2048)
                                         ->resizableImages()
-                                        ->belowContent('Use the toolbar to format text, add headings, lists, links, and images.'),
+                                        ->helperText('Use the toolbar to format text, add headings, lists, links, and images.'),
                                 ]),
                             Section::make('Advanced Settings')
                                 ->schema([
@@ -102,7 +103,7 @@ class GalleryPhotoForm
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/gallery/photos/')
-                                        ->belowContent('Use only lowercase letters, numbers, and hyphens.'),
+                                        ->helperText('Use only lowercase letters, numbers, and hyphens.'),
                                     Group::make([
                                         Text::make('SEO Settings'),
                                         Group::make([
@@ -113,7 +114,7 @@ class GalleryPhotoForm
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use photo title.'),
+                                                ->helperText('Leave empty to use photo title.'),
                                             Textarea::make('meta_description')
                                                 ->dehydrated(false)
                                                 ->nullable()
@@ -122,7 +123,7 @@ class GalleryPhotoForm
                                                 ->maxLength(255)
                                                 ->label('Meta Description')
                                                 ->autosize()
-                                                ->belowContent('Recommended: 150-160 characters.'),
+                                                ->helperText('Recommended: 150-160 characters.'),
                                         ])
                                             ->dense(false),
                                     ])
@@ -159,7 +160,7 @@ class GalleryPhotoForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The news will be published automatically at this date and time')
+                                        ->helperText('The news will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                             Section::make('Categories')

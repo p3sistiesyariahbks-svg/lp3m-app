@@ -3,13 +3,11 @@
 namespace App\Filament\Pages;
 
 use App\Enums\MailDriver;
-use App\Enums\MailEncryption;
 use App\Filament\Clusters\Settings\SettingsCluster;
 use App\Settings\EmailSettings;
 use BackedEnum;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Callout;
 use Filament\Schemas\Components\Grid;
@@ -35,13 +33,8 @@ class ManageEmail extends SettingsPage
             ->columns(1)
             ->components([
                 Group::make([
-                    Section::make('Enable Email')
-                        ->description('Enable email functionality.')
-                        ->afterHeader([
-                            Toggle::make('enable_email')
-                                ->hiddenLabel()
-                                ->live(),
-                        ])
+                    Section::make('Mail Driver')
+                        ->description('Choose how emails are delivered.')
                         ->schema([
                             Grid::make()
                                 ->schema([
@@ -54,8 +47,7 @@ class ManageEmail extends SettingsPage
                                         ->options(MailDriver::class)
                                         ->native(false)
                                         ->selectablePlaceholder(false)
-                                        ->live()
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->live(),
                                     TextInput::make('postmark_api_key')
                                         ->required()
                                         ->string()
@@ -78,7 +70,7 @@ class ManageEmail extends SettingsPage
                         ->description('Configure your SMTP server settings.')
                         ->schema([
                             Callout::make()
-                                ->description('Use TLS encryption for secure email delivery. Port 587 for TLS, 465 for SSL.')
+                                ->description('Encryption follows the port: 465 uses SSL/TLS, 587 uses STARTTLS.')
                                 ->info(),
                             Grid::make()
                                 ->schema([
@@ -90,42 +82,30 @@ class ManageEmail extends SettingsPage
                                         ->validationAttribute('smtp host')
                                         ->label('SMTP Host')
                                         ->prefixIcon(Heroicon::OutlinedServerStack)
-                                        ->placeholder('smtp.example.com')
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->placeholder('smtp.example.com'),
                                     TextInput::make('smtp_port')
                                         ->requiredIf('mail_driver', MailDriver::Smtp)
                                         ->numeric()
                                         ->minValue(1)
                                         ->maxValue(100)
                                         ->validationAttribute('smtp port')
-                                        ->label('SMTP Port')
-                                        ->belowContent('587 for TLS, 465 for SSL, 25 for unencrypted.')
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->label('SMTP Port'),
                                     TextInput::make('smtp_username')
                                         ->requiredIf('mail_driver', MailDriver::Smtp)
                                         ->string()
                                         ->minLength(3)
                                         ->maxLength(100)
                                         ->validationAttribute('smtp username')
-                                        ->label('SMTP Username')
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->label('SMTP Username'),
                                     TextInput::make('smtp_password')
                                         ->requiredIf('mail_driver', MailDriver::Smtp)
                                         ->string()
                                         ->minLength(3)
                                         ->maxLength(100)
+                                        ->password()
+                                        ->revealable()
                                         ->validationAttribute('smtp password')
-                                        ->label('SMTP Password')
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
-                                    Select::make('encryption')
-                                        ->requiredIf('mail_driver', MailDriver::Smtp)
-                                        ->string()
-                                        ->enum(MailEncryption::class)
-                                        ->label('Encryption')
-                                        ->options(MailEncryption::class)
-                                        ->native(false)
-                                        ->selectablePlaceholder(false)
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->label('SMTP Password'),
                                 ]),
                         ])
                         ->collapsible(),
@@ -135,18 +115,15 @@ class ManageEmail extends SettingsPage
                                 ->schema([
                                     TextInput::make('from_email_address')
                                         ->required()
-                                        ->string()
-                                        ->minLength(3)
+                                        ->email()
                                         ->maxLength(100)
-                                        ->label('From Email Address')
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->label('From Email Address'),
                                     TextInput::make('from_name')
                                         ->required()
                                         ->string()
                                         ->minLength(3)
                                         ->maxLength(100)
-                                        ->label('From Name')
-                                        ->disabled(fn (Get $get) => ! $get('enable_email')),
+                                        ->label('From Name'),
                                 ]),
                         ]),
                 ]),

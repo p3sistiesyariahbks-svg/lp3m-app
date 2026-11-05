@@ -21,7 +21,7 @@ class PageResource extends JsonResource
             'slug' => $this->slug,
             'content' => $this->content,
             'status' => $this->status,
-            'published_at' => $this->published_at?->diffForHumans(),
+            'published_at' => $this->published_at,
             'created_by' => $this->creator?->name,
         ];
     }

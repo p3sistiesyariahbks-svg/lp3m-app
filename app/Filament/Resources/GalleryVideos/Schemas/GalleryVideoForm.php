@@ -56,7 +56,7 @@ class GalleryVideoForm
                                         ->validationAttribute('video url')
                                         ->label('Video URL')
                                         ->placeholder('https://example.com')
-                                        ->belowContent('Enter a ready-to-use embed URL.'),
+                                        ->helperText('Enter a ready-to-use embed URL.'),
                                     AdvancedRichEditor::make('content')
                                         ->nullable()
                                         ->maxLength(65535)
@@ -65,7 +65,7 @@ class GalleryVideoForm
                                         ->headingLevels([1, 2, 3, 4, 5, 6])
                                         ->fileAttachmentsMaxSize(2048)
                                         ->resizableImages()
-                                        ->belowContent('Use the toolbar to format text, add headings, lists, links, and images.'),
+                                        ->helperText('Use the toolbar to format text, add headings, lists, links, and images.'),
                                 ]),
                             Section::make('Advanced Settings')
                                 ->schema([
@@ -77,7 +77,7 @@ class GalleryVideoForm
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/gallery/videos/')
-                                        ->belowContent('Use only lowercase letters, numbers, and hyphens.'),
+                                        ->helperText('Use only lowercase letters, numbers, and hyphens.'),
                                     Group::make([
                                         Text::make('SEO Settings'),
                                         Group::make([
@@ -88,7 +88,7 @@ class GalleryVideoForm
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use video title.'),
+                                                ->helperText('Leave empty to use video title.'),
                                             Textarea::make('meta_description')
                                                 ->dehydrated(false)
                                                 ->nullable()
@@ -97,7 +97,7 @@ class GalleryVideoForm
                                                 ->maxLength(255)
                                                 ->label('Meta Description')
                                                 ->autosize()
-                                                ->belowContent('Recommended: 150-160 characters.'),
+                                                ->helperText('Recommended: 150-160 characters.'),
                                         ])
                                             ->dense(false),
                                     ])
@@ -135,7 +135,7 @@ class GalleryVideoForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The news will be published automatically at this date and time')
+                                        ->helperText('The news will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                             Section::make('Featured Image')
@@ -151,7 +151,8 @@ class GalleryVideoForm
                                         ->multiple(false)
                                         ->disk('public')
                                         ->visibility('public')
-                                        ->belowContent('This image appears in video previews and social media shares.'),
+                                        ->downloadable()
+                                        ->helperText('This image appears in video previews and social media shares.'),
                                 ]),
                             Section::make('Categories')
                                 ->schema([

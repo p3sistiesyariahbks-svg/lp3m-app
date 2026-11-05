@@ -9,6 +9,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\NewsResource;
 use App\Models\News;
 use App\Models\Taxonomy;
+use App\Settings\AppearanceSettings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,7 +20,7 @@ class NewsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): Response
+    public function index(Request $request, AppearanceSettings $appearance): Response
     {
         $sortBy = $request->enum(
             'sort_by',
@@ -31,7 +32,7 @@ class NewsController extends Controller
             ->with(['categories', 'media'])
             ->where('status', StatusType::Published)
             ->sortBy($sortBy)
-            ->paginate(perPage: 12)
+            ->paginate(perPage: $appearance->items_per_page)
             ->withQueryString()
             ->toResourceCollection(NewsResource::class)
         );

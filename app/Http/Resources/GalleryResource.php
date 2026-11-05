@@ -25,7 +25,7 @@ class GalleryResource extends JsonResource
             'description' => $this->description,
             'status' => $this->status,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            'published_at' => $this->published_at?->diffForHumans(),
+            'published_at' => $this->published_at,
             'created_by' => $this->creator?->name,
         ];
     }

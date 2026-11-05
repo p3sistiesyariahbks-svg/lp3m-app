@@ -74,7 +74,8 @@ class DocumentForm
                                                         ->multiple(false)
                                                         ->disk('public')
                                                         ->visibility('public')
-                                                        ->belowContent('Accepted File Types: pdf, doc, xls and ppt only.'),
+                                                        ->downloadable()
+                                                        ->helperText('Accepted File Types: pdf, doc, xls and ppt only.'),
                                                 ]),
                                             Tab::make('From URL')
                                                 ->schema([
@@ -86,7 +87,7 @@ class DocumentForm
                                                         ->validationAttribute('file url')
                                                         ->label('File URL')
                                                         ->placeholder('https://example.com')
-                                                        ->belowContent('Make sure the URL is publicly accessible.'),
+                                                        ->helperText('Make sure the URL is publicly accessible.'),
                                                 ]),
                                         ])
                                         ->persistTab()
@@ -102,7 +103,7 @@ class DocumentForm
                                         ->validationAttribute('url slug')
                                         ->label('URL Slug')
                                         ->prefix('/documents/')
-                                        ->belowContent('Use only lowercase letters, numbers, and hyphens.'),
+                                        ->helperText('Use only lowercase letters, numbers, and hyphens.'),
                                     Group::make([
                                         Text::make('SEO Settings'),
                                         Group::make([
@@ -113,7 +114,7 @@ class DocumentForm
                                                 ->minLength(3)
                                                 ->maxLength(100)
                                                 ->label('SEO Title')
-                                                ->belowContent('Leave empty to use document title.'),
+                                                ->helperText('Leave empty to use document title.'),
                                             Textarea::make('meta_description')
                                                 ->dehydrated(false)
                                                 ->nullable()
@@ -122,7 +123,7 @@ class DocumentForm
                                                 ->maxLength(255)
                                                 ->label('Meta Description')
                                                 ->autosize()
-                                                ->belowContent('Recommended: 150-160 characters.'),
+                                                ->helperText('Recommended: 150-160 characters.'),
                                         ])
                                             ->dense(false),
                                     ])
@@ -159,7 +160,7 @@ class DocumentForm
                                     ])
                                         ->label('Publish Date & Time')
                                         ->columns(2)
-                                        ->belowContent('The document will be published automatically at this date and time')
+                                        ->helperText('The document will be published automatically at this date and time')
                                         ->visible(fn (Get $get): bool => $get('status') === StatusType::Scheduled),
                                 ]),
                             Section::make('Featured Image')
@@ -175,7 +176,8 @@ class DocumentForm
                                         ->multiple(false)
                                         ->disk('public')
                                         ->visibility('public')
-                                        ->belowContent('This image appears in document previews and social media shares.'),
+                                        ->downloadable()
+                                        ->helperText('This image appears in document previews and social media shares.'),
                                 ]),
                             Section::make('Categories')
                                 ->schema([

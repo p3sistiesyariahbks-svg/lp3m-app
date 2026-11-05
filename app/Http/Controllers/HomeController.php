@@ -12,6 +12,8 @@ use App\Models\Announcement;
 use App\Models\Gallery;
 use App\Models\News;
 use App\Models\Partner;
+use App\Settings\AppearanceSettings;
+use App\Settings\SeoSettings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -22,8 +24,11 @@ class HomeController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request): Response
-    {
+    public function __invoke(
+        Request $request,
+        SeoSettings $seo,
+        AppearanceSettings $appearance,
+    ): Response {
         $news = Inertia::once(fn () => News::query()
             ->with(['categories', 'views', 'media'])
             ->where('status', StatusType::Published)
@@ -63,7 +68,7 @@ class HomeController extends Controller
         $announcements = Inertia::scroll(fn () => Announcement::query()
             ->where('status', StatusType::Published)
             ->latest('published_at')
-            ->paginate(12, pageName: 'announcements_page')
+            ->paginate(perPage: $appearance->items_per_page, pageName: 'announcements_page')
             ->withQueryString()
             ->toResourceCollection(AnnouncementResource::class)
         );
@@ -83,7 +88,7 @@ class HomeController extends Controller
             'announcements' => $announcements,
             'partners' => $partners,
         ])->withSeo(new SEOData(
-            title: 'Home',
+            title: $seo->homepage_title ?: 'Home',
             description: 'Advancing knowledge and serving communities through research and collaboration.',
         ));
     }

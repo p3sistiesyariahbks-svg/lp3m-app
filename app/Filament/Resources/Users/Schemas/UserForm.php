@@ -35,6 +35,9 @@ class UserForm
                                 ->maxSize(2048)
                                 ->acceptedFileTypes(['image/png', 'image/jpeg'])
                                 ->collection('avatars')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->downloadable()
                                 ->alignCenter(),
                             Group::make([
                                 Text::make('Upload Avatar')

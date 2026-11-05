@@ -11,6 +11,8 @@ use App\Http\Resources\DocumentResource;
 use App\Http\Resources\GalleryResource;
 use App\Http\Resources\NewsResource;
 use App\Models\Taxonomy;
+use App\Settings\AppearanceSettings;
+use App\Settings\SeoSettings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Rankbeam\Seo\Data\SEOData;
@@ -25,6 +27,8 @@ class CategoryController extends Controller
         Taxonomy $category,
         string $component,
         TaxonomyType $type,
+        SeoSettings $seo,
+        AppearanceSettings $appearance,
         ?GalleryType $gallery = null,
     ) {
         $sortBy = $request->enum(
@@ -38,14 +42,14 @@ class CategoryController extends Controller
                 ->with(['categories', 'media'])
                 ->where('news.status', StatusType::Published)
                 ->sortBy($sortBy)
-                ->paginate(perPage: 12)
+                ->paginate(perPage: $appearance->items_per_page)
                 ->withQueryString()
                 ->toResourceCollection(NewsResource::class),
             TaxonomyType::Documents => $category->documents()
                 ->with(['categories', 'media'])
                 ->where('documents.status', StatusType::Published)
                 ->sortBy($sortBy)
-                ->paginate(perPage: 12)
+                ->paginate(perPage: $appearance->items_per_page)
                 ->withQueryString()
                 ->toResourceCollection(DocumentResource::class),
             TaxonomyType::Gallery => $category->galleries()
@@ -55,7 +59,7 @@ class CategoryController extends Controller
                     'galleries.status' => StatusType::Published,
                 ])
                 ->sortBy($sortBy)
-                ->paginate(perPage: 12)
+                ->paginate(perPage: $appearance->items_per_page)
                 ->withQueryString()
                 ->toResourceCollection(GalleryResource::class),
         });
@@ -77,7 +81,7 @@ class CategoryController extends Controller
             'filters' => ['sort_by' => $sortBy],
         ])->withSeo(new SEOData(
             title: $category->name,
-            description: $category->description,
+            description: $category->description ?: $seo->meta_description,
         ));
     }
 }

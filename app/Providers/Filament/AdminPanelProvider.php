@@ -21,6 +21,8 @@ use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\MenuLocation;
 use App\Models\Page;
+use App\Settings\AppearanceSettings;
+use AzGasim\FilamentUnsavedChangesModal\FilamentUnsavedChangesModalPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
 use Caresome\FilamentAuthDesigner\Data\AuthPageConfig;
 use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
@@ -38,7 +40,6 @@ use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\GridDirection;
 use Filament\Support\Enums\Platform;
 use Filament\Support\Icons\Heroicon;
@@ -49,9 +50,8 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use SpyApp\ThemeEdinburgh\ThemeEdinburghPlugin;
 use Waguilar\FilamentGuardian\FilamentGuardianPlugin;
 
 use function Filament\Support\original_request;
@@ -68,9 +68,8 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
+            ->colors([])
+            ->defaultThemeMode(app(AppearanceSettings::class)->default_theme)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\Filament\Clusters')
@@ -197,18 +196,29 @@ class AdminPanelProvider extends PanelProvider
                     ]);
             })
             ->plugins([
-                ThemeEdinburghPlugin::make(),
                 AuthDesignerPlugin::make()
                     ->defaults(fn (AuthPageConfig $config) => $config
-                        ->media(Vite::asset('resources/images/background.webp'), alt: 'ISNJ Bengkalis')
-                        ->mediaPosition(MediaPosition::Cover)
-                        ->blur(0)
+                        ->media(
+                            media: transform(
+                                app(AppearanceSettings::class)->media_path,
+                                fn (string $path) => Storage::disk('public')->url($path),
+                            ),
+                            alt: app(AppearanceSettings::class)->media_alt,
+                        )
+                        ->mediaPosition(app(AppearanceSettings::class)->layout_style)
+                        ->blur(app(AppearanceSettings::class)->blur)
                     )
                     ->login()
                     ->passwordReset(fn ($config) => $config
                         ->mediaPosition(MediaPosition::Left)
-                        ->mediaSize('50%')
+                        ->mediaSize(app(AppearanceSettings::class)->media_size)
                     ),
+                FilamentUnsavedChangesModalPlugin::make()
+                    ->modalWidth('md')
+                    ->modalIcon('heroicon-o-exclamation-triangle')
+                    ->modalIconColor('warning')
+                    ->stayButtonColor('gray')
+                    ->leaveButtonColor('danger'),
                 FilamentGuardianPlugin::make()
                     ->superAdmin()
                     ->superAdminRoleName('Super Admin')

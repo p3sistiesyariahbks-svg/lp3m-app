@@ -8,7 +8,8 @@ return new class extends SettingsMigration
     {
         $this->migrator->add('seo.homepage_title');
         $this->migrator->add('seo.title_suffix');
-        $this->migrator->add('seo.default_meta_description');
-        $this->migrator->add('seo.default_social_image');
+        $this->migrator->add('seo.meta_description');
+        $this->migrator->add('seo.og_image');
+        $this->migrator->add('seo.verification', []);
     }
 };

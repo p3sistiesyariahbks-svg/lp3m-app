@@ -24,7 +24,7 @@ class NewsResource extends JsonResource
             'reading_time' => $this->reading_time,
             'status' => $this->status,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            'published_at' => $this->published_at?->diffForHumans(),
+            'published_at' => $this->published_at,
             'created_by' => $this->creator?->name,
         ];
     }

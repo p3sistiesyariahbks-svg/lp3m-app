@@ -1,3 +1,5 @@
+import type { GeneralSettings, SocialLinksSettings } from '@/types/settings';
+
 export type MenuItem = {
   id: string;
   title: string;
@@ -17,21 +19,14 @@ export type Menu = {
   menu_items: MenuItem[];
 };
 
-export type SocialLinks = {
-  facebook: string | null;
-  twitter: string | null;
-  instagram: string | null;
-  linkedin: string | null;
-  youtube: string | null;
-  github: string | null;
-  discord: string | null;
-};
-
 export type PageProps = {
   menu: {
     header: Menu;
     footer: Menu;
   };
-  socialLinks: SocialLinks;
+  settings: {
+    general: GeneralSettings;
+    socialLinks: SocialLinksSettings;
+  };
   [key: string]: unknown;
 };

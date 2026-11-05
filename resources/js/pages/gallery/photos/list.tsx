@@ -274,7 +274,7 @@ export function GalleryCard({ gallery }: { gallery: Gallery }) {
           ))}
         </div>
 
-        <h3 className="mt-4 line-clamp-2 text-[1.5rem] font-medium tracking-tight text-pretty">
+        <h3 className="mt-4 line-clamp-2 text-[1.35rem] font-medium tracking-tight text-pretty">
           <Link href={photoShow(gallery.slug)} className="relative">
             {gallery.title}
           </Link>

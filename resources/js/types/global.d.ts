@@ -1,4 +1,10 @@
 import type { Auth } from '@/types/auth';
+import type { Menu } from '@/types/layout';
+import type {
+  AppearanceSettings,
+  GeneralSettings,
+  SocialLinksSettings,
+} from '@/types/settings';
 
 declare module 'react' {
   interface InputHTMLAttributes<T> {
@@ -11,7 +17,15 @@ declare module '@inertiajs/core' {
     sharedPageProps: {
       name: string;
       auth: Auth;
-      sidebarOpen: boolean;
+      menu: {
+        header: Menu;
+        footer: Menu;
+      };
+      settings: {
+        general: GeneralSettings;
+        socialLinks: SocialLinksSettings;
+        appearance: AppearanceSettings;
+      };
       [key: string]: unknown;
     };
   }

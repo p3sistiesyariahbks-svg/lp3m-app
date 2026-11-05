@@ -3,17 +3,22 @@
 namespace App\Models;
 
 use Aliziodev\LaravelTaxonomy\Models\Taxonomy as BaseTaxonomy;
+use Closure;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Database\Factories\TaxonomyFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class Taxonomy extends BaseTaxonomy
 {
     /** @use HasFactory<TaxonomyFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, Sluggable;
 
     /**
      * The table associated with the model.
@@ -49,6 +54,38 @@ class Taxonomy extends BaseTaxonomy
      * @var bool
      */
     public $timestamps = true;
+
+    /**
+     * Get the taxonomy's slug source.
+     */
+    protected function slugSource(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->slug ?: $this->name,
+        );
+    }
+
+    /**
+     * Get the sluggable configuration for the model.
+     *
+     * @return array<string, array<string, bool|string|Closure>>
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'slug_source',
+                'onUpdate' => true,
+                'includeTrashed' => true,
+                'uniqueSuffix' => static fn (
+                    string $slug,
+                    string $separator,
+                    Collection $list,
+                    int $firstSuffix
+                ): string => Str::lower(Str::random(6)),
+            ],
+        ];
+    }
 
     /**
      * Get the parent of this taxonomy.

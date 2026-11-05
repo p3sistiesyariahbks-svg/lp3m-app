@@ -2,22 +2,22 @@
 
 namespace App\Filament\Pages;
 
-use App\Enums\AuthMediaPosition;
-use App\Enums\DefaultTheme;
 use App\Filament\Clusters\Settings\SettingsCluster;
 use App\Settings\AppearanceSettings;
 use BackedEnum;
+use Caresome\FilamentAuthDesigner\Enums\MediaPosition;
+use Filament\Enums\ThemeMode;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ManageAppearance extends SettingsPage
 {
@@ -43,9 +43,18 @@ class ManageAppearance extends SettingsPage
                                     Radio::make('default_theme')
                                         ->required()
                                         ->string()
-                                        ->enum(DefaultTheme::class)
+                                        ->enum(ThemeMode::class)
                                         ->label('Default Theme')
-                                        ->options(DefaultTheme::class)
+                                        ->options([
+                                            ThemeMode::System->value => 'System',
+                                            ThemeMode::Light->value => 'Light',
+                                            ThemeMode::Dark->value => 'Dark',
+                                        ])
+                                        ->descriptions([
+                                            ThemeMode::System->value => "Match visitor's OS preference",
+                                            ThemeMode::Light->value => 'Always start in light mode',
+                                            ThemeMode::Dark->value => 'Always start in dark mode',
+                                        ])
                                         ->columnSpanFull(),
                                     ColorPicker::make('brand_color')
                                         ->required()
@@ -70,17 +79,6 @@ class ManageAppearance extends SettingsPage
                                     ->helperText('Applies to all listing pages across the site'),
                             ]),
                     ]),
-                Section::make('Social Sharing')
-                    ->description('Choose whether social share buttons appear on your content pages.')
-                    ->schema([
-                        Section::make('Show Share Buttons')
-                            ->description('Display social share buttons on content pages.')
-                            ->afterHeader([
-                                Toggle::make('show_share_buttons')
-                                    ->hiddenLabel()
-                                    ->live(),
-                            ]),
-                    ]),
                 Section::make('Auth Pages')
                     ->description('Configure Auth Pages settings.')
                     ->schema([
@@ -89,38 +87,53 @@ class ManageAppearance extends SettingsPage
                                 Radio::make('layout_style')
                                     ->required()
                                     ->string()
-                                    ->enum(AuthMediaPosition::class)
+                                    ->enum(MediaPosition::class)
                                     ->label('Layout Style')
-                                    ->options(AuthMediaPosition::class)
+                                    ->options([
+                                        MediaPosition::Cover->value => 'Cover',
+                                        MediaPosition::Left->value => 'Left',
+                                        MediaPosition::Right->value => 'Right',
+                                        MediaPosition::Top->value => 'Top',
+                                        MediaPosition::Bottom->value => 'Bottom',
+                                    ])
                                     ->live()
                                     ->columnSpanFull(),
-                                SpatieMediaLibraryFileUpload::make('media_path')
+                                FileUpload::make('media_path')
                                     ->nullable()
-                                    ->image()
-                                    ->maxSize(1024)
-                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'video/mp4'])
+                                    ->maxSize(2048)
+                                    ->acceptedFileTypes([
+                                        'image/png',
+                                        'image/jpeg',
+                                        'video/mp4',
+                                    ])
+                                    ->getUploadedFileNameForStorageUsing(
+                                        fn (TemporaryUploadedFile $file): string => 'background-media.'.$file->extension(),
+                                    )
                                     ->label('Background Media')
                                     ->imageEditor()
-                                    ->collection('settings')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->downloadable()
                                     ->helperText('Image or video shown alongside/behind the form.')
                                     ->columnSpanFull(),
                                 TextInput::make('media_alt')
-                                    ->requiredIfAccepted('media_path')
+                                    ->requiredWith('media_path')
                                     ->string()
                                     ->minLength(3)
                                     ->maxLength(100)
                                     ->label('Media Alt Text')
                                     ->columnSpanFull(),
                                 TextInput::make('media_size')
-                                    ->requiredIfAccepted('media_path')
+                                    ->requiredWith('media_path')
                                     ->string()
+                                    ->regex('/^\d+(\.\d+)?(px|%)$/')
                                     ->minLength(3)
                                     ->maxLength(100)
                                     ->label('Media Size')
                                     ->placeholder('50%, 250px')
                                     ->helperText('Ignored when layout is Cover.'),
                                 TextInput::make('blur')
-                                    ->requiredIfAccepted('media_path')
+                                    ->requiredWith('media_path')
                                     ->numeric()
                                     ->minValue(0)
                                     ->maxValue(20)

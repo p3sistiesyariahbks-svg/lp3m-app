@@ -10,6 +10,7 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\GalleryResource;
 use App\Models\Gallery;
 use App\Models\Taxonomy;
+use App\Settings\AppearanceSettings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,7 +21,7 @@ class GalleryVideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): Response
+    public function index(Request $request, AppearanceSettings $appearance): Response
     {
         $sortBy = $request->enum(
             'sort_by',
@@ -35,7 +36,7 @@ class GalleryVideoController extends Controller
                 'status' => StatusType::Published,
             ])
             ->sortBy($sortBy)
-            ->paginate(perPage: 12)
+            ->paginate(perPage: $appearance->items_per_page)
             ->withQueryString()
             ->toResourceCollection(GalleryResource::class)
         );

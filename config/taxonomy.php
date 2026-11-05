@@ -115,14 +115,14 @@ return [
     |
     */
     'slugs' => [
-        'generate' => true,
-        'regenerate_on_update' => true,
+        'generate' => false,
+        'regenerate_on_update' => false,
         // When true, slug uniqueness check also considers soft-deleted records
         // When false, trashed records are ignored (slug can be reused)
         'consider_trashed' => false,
         // When restoring a soft-deleted taxonomy and slug conflicts with an active one,
         // regenerate slug automatically to a unique variant.
-        'regenerate_on_restore' => true,
+        'regenerate_on_restore' => false,
     ],
 
     /*

@@ -9,15 +9,19 @@ void createInertiaApp({
   strictMode: true,
   title: (title) => title || appName,
   progress: {
-    color: '#4B5563',
+    color: 'var(--primary)',
   },
   layout: () => MainLayout,
-  withApp(app) {
+  withApp(app, { page }) {
+    const {
+      settings: { appearance },
+    } = page.props;
+
     return (
       <ThemeProvider
         attribute="class"
         storageKey="theme"
-        defaultTheme="system"
+        defaultTheme={appearance.default_theme}
         enableSystem
         disableTransitionOnChange
       >
