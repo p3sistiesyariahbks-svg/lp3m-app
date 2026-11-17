@@ -94,6 +94,7 @@ class AppServiceProvider extends ServiceProvider
                 ->columnManagerLayout(ColumnManagerLayout::Modal)
                 ->columnManagerResetActionPosition(ColumnManagerResetActionPosition::Footer)
                 ->reorderableColumns()
+                ->lazyLoaded()
                 ->defaultDateDisplayFormat(
                     fn (): string => app(GeneralSettings::class)->date_format,
                 )
@@ -195,7 +196,6 @@ class AppServiceProvider extends ServiceProvider
         SEO::sitemaps()->register('static', fn () => [
             Url::create(route('home'))->setPriority(1.0),
             Url::create(route('contact'))->setPriority(0.5),
-            Url::create(route('placements.index'))->setPriority(0.8),
             Url::create(route('news.index'))->setPriority(0.8),
             Url::create(route('documents.index'))->setPriority(0.8),
             Url::create(route('gallery.photos.index'))->setPriority(0.8),

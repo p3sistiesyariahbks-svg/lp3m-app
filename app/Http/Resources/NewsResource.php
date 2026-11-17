@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kisame76\FilamentAdvancedRichEditor\RichEditor\AdvancedRichContentRenderer;
 
 class NewsResource extends JsonResource
 {
@@ -19,7 +20,9 @@ class NewsResource extends JsonResource
             'thumbnail' => new MediaResource($this->getFirstMedia('thumbnails')),
             'title' => $this->title,
             'slug' => $this->slug,
-            'content' => $this->content,
+            'content' => AdvancedRichContentRenderer::make($this->content)
+                ->attribute($this->resource->getRichContentAttribute('content'))
+                ->toHtml(),
             'description' => $this->description,
             'reading_time' => $this->reading_time,
             'status' => $this->status,

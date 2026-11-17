@@ -17,92 +17,92 @@
  * and the PHP half mirrors it with the same mechanism.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor block style extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor block style extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Extension } = tiptap;
+    const { Extension } = tiptap
 
-  return Extension.create({
-    name: 'arteBlockStyle',
+    return Extension.create({
+        name: 'arteBlockStyle',
 
-    addOptions() {
-      return {
-        types: ['paragraph', 'heading', 'blockquote', 'listItem', 'codeBlock'],
-      };
-    },
-
-    addGlobalAttributes() {
-      return [
-        {
-          types: this.options.types,
-          attributes: {
-            arteStyle: {
-              default: null,
-              parseHTML: (element) =>
-                element.getAttribute('data-style') || null,
-              renderHTML: (attributes) =>
-                attributes.arteStyle
-                  ? { 'data-style': attributes.arteStyle }
-                  : {},
-            },
-          },
+        addOptions() {
+            return {
+                types: ['paragraph', 'heading', 'blockquote', 'listItem', 'codeBlock'],
+            }
         },
-      ];
-    },
 
-    addCommands() {
-      const write =
-        (key) =>
-        ({ state, tr, dispatch }) => {
-          const types = new Set(
-            this.options.types.filter((type) => state.schema.nodes[type]),
-          );
+        addGlobalAttributes() {
+            return [
+                {
+                    types: this.options.types,
+                    attributes: {
+                        arteStyle: {
+                            default: null,
+                            parseHTML: (element) =>
+                                element.getAttribute('data-style') || null,
+                            renderHTML: (attributes) =>
+                                attributes.arteStyle
+                                    ? { 'data-style': attributes.arteStyle }
+                                    : {},
+                        },
+                    },
+                },
+            ]
+        },
 
-          const { from, to } = state.selection;
+        addCommands() {
+            const write =
+                (key) =>
+                ({ state, tr, dispatch }) => {
+                    const types = new Set(
+                        this.options.types.filter((type) => state.schema.nodes[type]),
+                    )
 
-          let changed = false;
+                    const { from, to } = state.selection
 
-          state.doc.nodesBetween(from, to, (node, pos) => {
-            if (!types.has(node.type.name) || node.attrs.arteStyle === key) {
-              return;
+                    let changed = false
+
+                    state.doc.nodesBetween(from, to, (node, pos) => {
+                        if (!types.has(node.type.name) || node.attrs.arteStyle === key) {
+                            return
+                        }
+
+                        changed = true
+
+                        if (dispatch) {
+                            tr.setNodeMarkup(pos, undefined, {
+                                ...node.attrs,
+                                arteStyle: key,
+                            })
+                        }
+                    })
+
+                    return changed
+                }
+
+            return {
+                setBlockStyle: (key) => write(key),
+
+                unsetBlockStyle: () => write(null),
+
+                // Picking the style a block already has takes it back off, the way picking
+                // a heading level returns a heading to a paragraph. One style at a time is
+                // the whole model: a project that wants two of its classes together writes
+                // one entry holding both.
+                toggleBlockStyle:
+                    (key) =>
+                    ({ editor, commands }) =>
+                        editor.isActive({ arteStyle: key })
+                            ? commands.unsetBlockStyle()
+                            : commands.setBlockStyle(key),
             }
-
-            changed = true;
-
-            if (dispatch) {
-              tr.setNodeMarkup(pos, undefined, {
-                ...node.attrs,
-                arteStyle: key,
-              });
-            }
-          });
-
-          return changed;
-        };
-
-      return {
-        setBlockStyle: (key) => write(key),
-
-        unsetBlockStyle: () => write(null),
-
-        // Picking the style a block already has takes it back off, the way picking
-        // a heading level returns a heading to a paragraph. One style at a time is
-        // the whole model: a project that wants two of its classes together writes
-        // one entry holding both.
-        toggleBlockStyle:
-          (key) =>
-          ({ editor, commands }) =>
-            editor.isActive({ arteStyle: key })
-              ? commands.unsetBlockStyle()
-              : commands.setBlockStyle(key),
-      };
-    },
-  });
-};
+        },
+    })
+}

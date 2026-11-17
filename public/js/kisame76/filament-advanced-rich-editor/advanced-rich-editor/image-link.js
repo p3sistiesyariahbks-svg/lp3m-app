@@ -20,92 +20,91 @@
 //
 // Checked here as well as there because a document can be edited in the source view and
 // saved without ever passing through the dialog that asks for the address.
-export const SCHEMES = ['http', 'https', 'mailto', 'tel'];
+export const SCHEMES = ['http', 'https', 'mailto', 'tel']
 
 // Whitespace and control characters come out before the scheme is read: `java\nscript:`
 // is the oldest trick against a check that reads the string as it arrives, because a
 // browser strips them before resolving an address, so a check that does not strip them
 // first is reading a different string than the browser will.
-const withoutControlCharacters = (href) =>
-  href.replace(/[\u0000-\u0020\u007F]/g, '');
+// The rule guards against typing a control character into a regex by mistake; here they
+// are the subject of the line rather than an accident in it.
+// biome-ignore lint/suspicious/noControlCharactersInRegex: stripping them is the point
+const withoutControlCharacters = (href) => href.replace(/[\u0000-\u0020\u007F]/g, '')
 
 export const imageHref = (value) => {
-  if (typeof value !== 'string') {
-    return null;
-  }
+    if (typeof value !== 'string') {
+        return null
+    }
 
-  const href = value.trim();
+    const href = value.trim()
 
-  if (href === '') {
-    return null;
-  }
+    if (href === '') {
+        return null
+    }
 
-  const colon = href.indexOf(':');
-  const slash = href.indexOf('/');
+    const colon = href.indexOf(':')
+    const slash = href.indexOf('/')
 
-  // No scheme at all: a path, a fragment or a query, which a browser resolves against
-  // the page it is on. The colon is looked for before the first slash on purpose -
-  // `/a:b` is a path with a colon in it, `javascript:alert(1)` is not a path at all.
-  if (colon === -1 || (slash !== -1 && slash < colon)) {
-    return withoutControlCharacters(href);
-  }
+    // No scheme at all: a path, a fragment or a query, which a browser resolves against
+    // the page it is on. The colon is looked for before the first slash on purpose -
+    // `/a:b` is a path with a colon in it, `javascript:alert(1)` is not a path at all.
+    if (colon === -1 || (slash !== -1 && slash < colon)) {
+        return withoutControlCharacters(href)
+    }
 
-  return SCHEMES.includes(href.slice(0, colon).toLowerCase())
-    ? withoutControlCharacters(href)
-    : null;
-};
+    return SCHEMES.includes(href.slice(0, colon).toLowerCase())
+        ? withoutControlCharacters(href)
+        : null
+}
+
 
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor image link needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor image link needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Extension } = tiptap;
+    const { Extension } = tiptap
 
-  return Extension.create({
-    name: 'arteImageLink',
+    return Extension.create({
+        name: 'arteImageLink',
 
-    addGlobalAttributes() {
-      return [
-        {
-          types: ['image'],
-          attributes: {
-            href: {
-              default: null,
+        addGlobalAttributes() {
+            return [
+                {
+                    types: ['image'],
+                    attributes: {
+                        href: {
+                            default: null,
 
-              parseHTML: (element) =>
-                imageHref(element.getAttribute('data-href')),
+                            parseHTML: (element) => imageHref(element.getAttribute('data-href')),
 
-              renderHTML: (attributes) => {
-                const href = imageHref(attributes.href);
+                            renderHTML: (attributes) => {
+                                const href = imageHref(attributes.href)
 
-                return href === null ? {} : { 'data-href': href };
-              },
-            },
+                                return href === null ? {} : { 'data-href': href }
+                            },
+                        },
 
-            // Beside the address rather than folded into it: a link that opens in
-            // a new tab is the same link, and clearing the tab setting is not
-            // clearing the link.
-            hrefNewTab: {
-              default: false,
+                        // Beside the address rather than folded into it: a link that opens in
+                        // a new tab is the same link, and clearing the tab setting is not
+                        // clearing the link.
+                        hrefNewTab: {
+                            default: false,
 
-              parseHTML: (element) =>
-                element.getAttribute('data-href-new-tab') === 'true',
+                            parseHTML: (element) => element.getAttribute('data-href-new-tab') === 'true',
 
-              renderHTML: (attributes) =>
-                attributes.hrefNewTab === true
-                  ? { 'data-href-new-tab': 'true' }
-                  : {},
-            },
-          },
+                            renderHTML: (attributes) =>
+                                attributes.hrefNewTab === true ? { 'data-href-new-tab': 'true' } : {},
+                        },
+                    },
+                },
+            ]
         },
-      ];
-    },
-  });
-};
+    })
+}

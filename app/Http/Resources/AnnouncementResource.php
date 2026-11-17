@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kisame76\FilamentAdvancedRichEditor\RichEditor\AdvancedRichContentRenderer;
 
 class AnnouncementResource extends JsonResource
 {
@@ -18,7 +19,9 @@ class AnnouncementResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'content' => $this->content,
+            'content' => AdvancedRichContentRenderer::make($this->content)
+                ->attribute($this->resource->getRichContentAttribute('content'))
+                ->toHtml(),
             'status' => $this->status,
             'published_at' => $this->published_at,
             'created_by' => $this->creator?->name,

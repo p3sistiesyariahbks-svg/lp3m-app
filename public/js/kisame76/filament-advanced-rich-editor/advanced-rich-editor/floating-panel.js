@@ -21,7 +21,7 @@
  * The gap kept between a panel and the edge of the window. Small enough to read as a panel
  * against the edge, large enough that the shadow is not clipped.
  */
-export const MARGIN = 8;
+export const MARGIN = 8
 
 /**
  * A coordinate kept inside the window.
@@ -31,10 +31,7 @@ export const MARGIN = 8;
  * while one whose right-hand end is off it can still be read and dragged.
  */
 export function clampInto(value, extent, limit) {
-  return Math.min(
-    Math.max(MARGIN, value),
-    Math.max(MARGIN, limit - extent - MARGIN),
-  );
+    return Math.min(Math.max(MARGIN, value), Math.max(MARGIN, limit - extent - MARGIN))
 }
 
 /**
@@ -42,14 +39,10 @@ export function clampInto(value, extent, limit) {
  * belongs to something on the page rather than to a point in the text.
  */
 export function cornerOf(anchor, size, viewport) {
-  return {
-    left: clampInto(
-      anchor.right - size.width - MARGIN,
-      size.width,
-      viewport.width,
-    ),
-    top: clampInto(anchor.top + MARGIN, size.height, viewport.height),
-  };
+    return {
+        left: clampInto(anchor.right - size.width - MARGIN, size.width, viewport.width),
+        top: clampInto(anchor.top + MARGIN, size.height, viewport.height),
+    }
 }
 
 /**
@@ -63,109 +56,106 @@ export function cornerOf(anchor, size, viewport) {
  * `onResize` fires only while the panel has not been dragged: once someone has put it
  * somewhere, a window resize is no reason to take that back.
  */
-export function floatingPanel(
-  element,
-  { handle, keepOpenInside = [], onClose = null, onResize = null } = {},
-) {
-  let drag = null;
-  let wasDragged = false;
-  let isOpen = true;
+export function floatingPanel(element, { handle, keepOpenInside = [], onClose = null, onResize = null } = {}) {
+    let drag = null
+    let wasDragged = false
+    let isOpen = true
 
-  const onDrag = (event) => {
-    if (!drag) {
-      return;
+    const onDrag = (event) => {
+        if (!drag) {
+            return
+        }
+
+        const box = element.getBoundingClientRect()
+
+        element.style.left = `${clampInto(event.clientX - drag.x, box.width, window.innerWidth)}px`
+        element.style.top = `${clampInto(event.clientY - drag.y, box.height, window.innerHeight)}px`
     }
 
-    const box = element.getBoundingClientRect();
+    const endDrag = () => {
+        drag = null
 
-    element.style.left = `${clampInto(event.clientX - drag.x, box.width, window.innerWidth)}px`;
-    element.style.top = `${clampInto(event.clientY - drag.y, box.height, window.innerHeight)}px`;
-  };
-
-  const endDrag = () => {
-    drag = null;
-
-    document.removeEventListener('pointermove', onDrag);
-    document.removeEventListener('pointerup', endDrag);
-  };
-
-  const startDrag = (event) => {
-    const box = element.getBoundingClientRect();
-
-    drag = { x: event.clientX - box.left, y: event.clientY - box.top };
-    wasDragged = true;
-
-    document.addEventListener('pointermove', onDrag);
-    document.addEventListener('pointerup', endDrag);
-  };
-
-  const onPointerDown = (event) => {
-    if (element.contains(event.target)) {
-      return;
+        document.removeEventListener('pointermove', onDrag)
+        document.removeEventListener('pointerup', endDrag)
     }
 
-    if (keepOpenInside.some((node) => node?.contains(event.target))) {
-      return;
+    const startDrag = (event) => {
+        const box = element.getBoundingClientRect()
+
+        drag = { x: event.clientX - box.left, y: event.clientY - box.top }
+        wasDragged = true
+
+        document.addEventListener('pointermove', onDrag)
+        document.addEventListener('pointerup', endDrag)
     }
 
-    close();
-  };
+    const onPointerDown = (event) => {
+        if (element.contains(event.target)) {
+            return
+        }
 
-  const onKeyDown = (event) => {
-    if (event.key !== 'Escape') {
-      return;
+        if (keepOpenInside.some((node) => node?.contains(event.target))) {
+            return
+        }
+
+        close()
     }
 
-    event.preventDefault();
-    close();
-  };
+    const onKeyDown = (event) => {
+        if (event.key !== 'Escape') {
+            return
+        }
 
-  const onWindowResize = () => {
-    if (!wasDragged) {
-      onResize?.();
-    }
-  };
-
-  function close() {
-    if (!isOpen) {
-      return;
+        event.preventDefault()
+        close()
     }
 
-    isOpen = false;
+    const onWindowResize = () => {
+        if (!wasDragged) {
+            onResize?.()
+        }
+    }
 
-    document.removeEventListener('pointerdown', onPointerDown, true);
-    document.removeEventListener('keydown', onKeyDown, true);
-    window.removeEventListener('resize', onWindowResize);
+    function close() {
+        if (!isOpen) {
+            return
+        }
 
-    handle?.removeEventListener('pointerdown', startDrag);
+        isOpen = false
 
-    endDrag();
+        document.removeEventListener('pointerdown', onPointerDown, true)
+        document.removeEventListener('keydown', onKeyDown, true)
+        window.removeEventListener('resize', onWindowResize)
 
-    element.remove();
+        handle?.removeEventListener('pointerdown', startDrag)
 
-    onClose?.();
-  }
+        endDrag()
 
-  document.body.append(element);
+        element.remove()
 
-  // Capturing, so a panel closes on a click the page would otherwise swallow first.
-  document.addEventListener('pointerdown', onPointerDown, true);
-  document.addEventListener('keydown', onKeyDown, true);
-  window.addEventListener('resize', onWindowResize);
+        onClose?.()
+    }
 
-  handle?.addEventListener('pointerdown', startDrag);
+    document.body.append(element)
 
-  return {
-    close,
-    moveTo({ left, top }) {
-      element.style.left = `${left}px`;
-      element.style.top = `${top}px`;
-    },
-    get wasDragged() {
-      return wasDragged;
-    },
-    get isOpen() {
-      return isOpen;
-    },
-  };
+    // Capturing, so a panel closes on a click the page would otherwise swallow first.
+    document.addEventListener('pointerdown', onPointerDown, true)
+    document.addEventListener('keydown', onKeyDown, true)
+    window.addEventListener('resize', onWindowResize)
+
+    handle?.addEventListener('pointerdown', startDrag)
+
+    return {
+        close,
+        moveTo({ left, top }) {
+            element.style.left = `${left}px`
+            element.style.top = `${top}px`
+        },
+        get wasDragged() {
+            return wasDragged
+        },
+        get isOpen() {
+            return isOpen
+        },
+    }
 }

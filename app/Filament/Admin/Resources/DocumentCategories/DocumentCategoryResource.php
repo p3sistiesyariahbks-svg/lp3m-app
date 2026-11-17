@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Filament\Admin\Resources\DocumentCategories;
+
+use App\Enums\TaxonomyType;
+use App\Filament\Admin\Resources\DocumentCategories\Pages\CreateDocumentCategory;
+use App\Filament\Admin\Resources\DocumentCategories\Pages\EditDocumentCategory;
+use App\Filament\Admin\Resources\DocumentCategories\Pages\ListDocumentCategories;
+use App\Filament\Admin\Resources\DocumentCategories\Schemas\DocumentCategoryForm;
+use App\Filament\Admin\Resources\DocumentCategories\Tables\DocumentCategoriesTable;
+use App\Models\Taxonomy;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
+class DocumentCategoryResource extends Resource
+{
+    protected static ?string $model = Taxonomy::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
+
+    protected static ?string $recordTitleAttribute = 'id';
+
+    protected static ?string $slug = '/documents/categories';
+
+    protected static ?string $modelLabel = 'Category';
+
+    public static function form(Schema $schema): Schema
+    {
+        return DocumentCategoryForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return DocumentCategoriesTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('type', TaxonomyType::Documents);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListDocumentCategories::route('/'),
+            'create' => CreateDocumentCategory::route('/create'),
+            'edit' => EditDocumentCategory::route('/{record}/edit'),
+        ];
+    }
+}

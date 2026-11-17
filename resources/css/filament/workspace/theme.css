@@ -1,0 +1,11 @@
+@import '../edinburgh.css';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@layer base {
+    .fpb-root {
+        @apply p-0!;
+    }
+}

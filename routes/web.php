@@ -11,7 +11,6 @@ use App\Http\Controllers\GalleryVideoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\PlacementController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)
@@ -49,11 +48,6 @@ Route::get('gallery/videos/category/{category:slug}', CategoryController::class)
         'gallery' => GalleryType::Videos,
     ])
     ->name('gallery.videos.category');
-
-Route::controller(PlacementController::class)->group(function () {
-    Route::get('/placements', 'index')
-        ->name('placements.index');
-});
 
 Route::controller(NewsController::class)->group(function () {
     Route::get('news', 'index')

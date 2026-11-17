@@ -25,36 +25,36 @@
  * they do, and binding them twice would only be a second place to keep them right.
  */
 export const ALIGNMENT_KEYS = {
-  'Mod-Shift-l': 'start',
-  'Mod-Shift-r': 'end',
-};
+    'Mod-Shift-l': 'start',
+    'Mod-Shift-r': 'end',
+}
 
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor alignment extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor alignment extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Extension } = tiptap;
+    const { Extension } = tiptap
 
-  return Extension.create({
-    name: 'arteAlignmentKeys',
+    return Extension.create({
+        name: 'arteAlignmentKeys',
 
-    addKeyboardShortcuts() {
-      return Object.fromEntries(
-        Object.entries(ALIGNMENT_KEYS).map(([key, alignment]) => [
-          key,
-          // Setting rather than toggling, which is what the toolbar buttons and
-          // TipTap's own four handlers do. It also returns true, which is what
-          // keeps the key away from the browser.
-          () => this.editor.commands.setTextAlign(alignment),
-        ]),
-      );
-    },
-  });
-};
+        addKeyboardShortcuts() {
+            return Object.fromEntries(
+                Object.entries(ALIGNMENT_KEYS).map(([key, alignment]) => [
+                    key,
+                    // Setting rather than toggling, which is what the toolbar buttons and
+                    // TipTap's own four handlers do. It also returns true, which is what
+                    // keeps the key away from the browser.
+                    () => this.editor.commands.setTextAlign(alignment),
+                ]),
+            )
+        },
+    })
+}

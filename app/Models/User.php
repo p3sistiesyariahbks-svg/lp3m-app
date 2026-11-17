@@ -10,6 +10,7 @@ use Filament\Forms\Components\RichEditor\Models\Concerns\InteractsWithRichConten
 use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
@@ -106,5 +107,13 @@ class User extends Authenticatable implements BannableInterface, HasMedia, HasRi
     public function canBeImpersonated(): bool
     {
         return ! $this->hasRole(Guardian::getSuperAdminRoleName());
+    }
+
+    /**
+     * Get all of the placements for the users.
+     */
+    public function placements(): HasMany
+    {
+        return $this->hasMany(Placement::class, 'supervisor_id');
     }
 }

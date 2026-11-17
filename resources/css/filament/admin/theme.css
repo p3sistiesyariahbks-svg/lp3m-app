@@ -1,6 +1,8 @@
+@import '../edinburgh.css';
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 @import '../../../../vendor/datlechin/filament-menu-builder/resources/css/index.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
-@source "../../../../vendor/datlechin/filament-menu-builder/resources/views/**/*.blade.php";
+@source '../../../../vendor/datlechin/filament-menu-builder/resources/views/**/*.blade.php';
+@source '../../../../vendor/hugomyb/filament-media-action/resources/views/**/*.blade.php';

@@ -2,21 +2,24 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Clusters\Settings\SettingsCluster;
-use App\Filament\Pages\ManageGeneral;
-use App\Filament\Resources\Announcements\AnnouncementResource;
-use App\Filament\Resources\DocumentCategories\DocumentCategoryResource;
-use App\Filament\Resources\Documents\DocumentResource;
-use App\Filament\Resources\GalleryCategories\GalleryCategoryResource;
-use App\Filament\Resources\GalleryPhotos\GalleryPhotoResource;
-use App\Filament\Resources\GalleryVideos\GalleryVideoResource;
-use App\Filament\Resources\Menus\MenuResource;
-use App\Filament\Resources\News\NewsResource;
-use App\Filament\Resources\NewsCategories\NewsCategoryResource;
-use App\Filament\Resources\Pages\PageResource;
-use App\Filament\Resources\Partners\PartnerResource;
-use App\Filament\Resources\Roles\RoleResource;
-use App\Filament\Resources\Users\UserResource;
+use App\Filament\Admin\Clusters\Settings\SettingsCluster;
+use App\Filament\Admin\Pages\ManageGeneral;
+use App\Filament\Admin\Resources\Announcements\AnnouncementResource;
+use App\Filament\Admin\Resources\DocumentCategories\DocumentCategoryResource;
+use App\Filament\Admin\Resources\Documents\DocumentResource;
+use App\Filament\Admin\Resources\GalleryCategories\GalleryCategoryResource;
+use App\Filament\Admin\Resources\GalleryPhotos\GalleryPhotoResource;
+use App\Filament\Admin\Resources\GalleryVideos\GalleryVideoResource;
+use App\Filament\Admin\Resources\Locations\LocationResource;
+use App\Filament\Admin\Resources\Menus\MenuResource;
+use App\Filament\Admin\Resources\News\NewsResource;
+use App\Filament\Admin\Resources\NewsCategories\NewsCategoryResource;
+use App\Filament\Admin\Resources\Pages\PageResource;
+use App\Filament\Admin\Resources\Partners\PartnerResource;
+use App\Filament\Admin\Resources\Periods\PeriodResource;
+use App\Filament\Admin\Resources\Registrations\RegistrationResource;
+use App\Filament\Admin\Resources\Roles\RoleResource;
+use App\Filament\Admin\Resources\Users\UserResource;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\MenuLocation;
@@ -70,13 +73,12 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors([])
             ->defaultThemeMode(app(AppearanceSettings::class)->default_theme)
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
-            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\Filament\Clusters')
+            ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
+            ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
+            ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\Filament\Admin\Clusters')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -183,6 +185,12 @@ class AdminPanelProvider extends PanelProvider
                                     ]))
                                     ->url(fn (): string => PartnerResource::getUrl('index')),
                             ]),
+                        NavigationGroup::make('Activity')
+                            ->items([
+                                ...LocationResource::getNavigationItems(),
+                                ...PeriodResource::getNavigationItems(),
+                                ...RegistrationResource::getNavigationItems(),
+                            ]),
                         NavigationGroup::make('Administrator')
                             ->items([
                                 ...MenuResource::getNavigationItems(),
@@ -276,7 +284,6 @@ class AdminPanelProvider extends PanelProvider
                             ->model(Page::class),
                         StaticMenuPanel::make()
                             ->add('Home', '/')
-                            ->add('Placements', '/placements')
                             ->add('News', '/news')
                             ->add('Document', '/documents')
                             ->add('Photo', '/gallery/photos')

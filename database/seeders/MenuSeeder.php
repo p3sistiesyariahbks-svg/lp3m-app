@@ -24,12 +24,11 @@ class MenuSeeder extends Seeder
             ->create();
 
         MenuItem::factory()
-            ->count(5)
+            ->count(4)
             ->staticMenu()
             ->for($header)
             ->state(new Sequence(
                 ['title' => 'Home', 'url' => '/', 'order' => 0],
-                ['title' => 'Placements', 'url' => '/placements', 'order' => 2],
                 ['title' => 'News', 'url' => '/news', 'order' => 3],
                 ['title' => 'Document', 'url' => '/documents', 'order' => 4],
                 ['title' => 'Contact', 'url' => '/contact', 'order' => 6],

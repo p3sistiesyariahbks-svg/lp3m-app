@@ -13,96 +13,95 @@
  * text. The figure is built in PHP when the page is rendered.
  */
 
-const WRAPPER = '[data-resize-wrapper]';
-const MIRROR = 'data-arte-caption';
+const WRAPPER = '[data-resize-wrapper]'
+const MIRROR = 'data-arte-caption'
 
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
-  const pmState = window.FilamentRichEditor?.tiptap?.pmState;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
+    const pmState = window.FilamentRichEditor?.tiptap?.pmState
 
-  if (!tiptap || !pmState) {
-    console.error(
-      'The advanced rich editor image caption extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap || !pmState) {
+        console.error(
+            'The advanced rich editor image caption extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
-
-  const { Extension } = tiptap;
-  const { Plugin, PluginKey } = pmState;
-
-  const normalise = (value) => {
-    const caption = typeof value === 'string' ? value.trim() : '';
-
-    return caption === '' ? null : caption;
-  };
-
-  /**
-   * Copies each image's caption onto the box drawn around it, and clears the ones whose
-   * image no longer has any. Runs on every editor update, which is also when an image is
-   * inserted, replaced or deleted.
-   */
-  const mirror = (element) => {
-    if (!element) {
-      return;
+        return null
     }
 
-    for (const box of element.querySelectorAll(`${WRAPPER}[${MIRROR}]`)) {
-      if (!box.querySelector('img[data-caption]')) {
-        box.removeAttribute(MIRROR);
-      }
+    const { Extension } = tiptap
+    const { Plugin, PluginKey } = pmState
+
+    const normalise = (value) => {
+        const caption = typeof value === 'string' ? value.trim() : ''
+
+        return caption === '' ? null : caption
     }
 
-    for (const image of element.querySelectorAll('img[data-caption]')) {
-      const caption = normalise(image.getAttribute('data-caption'));
-      const box = image.closest(WRAPPER);
+    /**
+     * Copies each image's caption onto the box drawn around it, and clears the ones whose
+     * image no longer has any. Runs on every editor update, which is also when an image is
+     * inserted, replaced or deleted.
+     */
+    const mirror = (element) => {
+        if (!element) {
+            return
+        }
 
-      if (!box) {
-        continue;
-      }
+        for (const box of element.querySelectorAll(`${WRAPPER}[${MIRROR}]`)) {
+            if (!box.querySelector('img[data-caption]')) {
+                box.removeAttribute(MIRROR)
+            }
+        }
 
-      if (caption === null) {
-        box.removeAttribute(MIRROR);
-      } else if (box.getAttribute(MIRROR) !== caption) {
-        box.setAttribute(MIRROR, caption);
-      }
+        for (const image of element.querySelectorAll('img[data-caption]')) {
+            const caption = normalise(image.getAttribute('data-caption'))
+            const box = image.closest(WRAPPER)
+
+            if (!box) {
+                continue
+            }
+
+            if (caption === null) {
+                box.removeAttribute(MIRROR)
+            } else if (box.getAttribute(MIRROR) !== caption) {
+                box.setAttribute(MIRROR, caption)
+            }
+        }
     }
-  };
 
-  return Extension.create({
-    name: 'arteImageCaption',
+    return Extension.create({
+        name: 'arteImageCaption',
 
-    addGlobalAttributes() {
-      return [
-        {
-          types: ['image'],
-          attributes: {
-            caption: {
-              default: null,
-              parseHTML: (element) =>
-                normalise(element.getAttribute('data-caption')),
-              renderHTML: (attributes) => {
-                const caption = normalise(attributes.caption);
+        addGlobalAttributes() {
+            return [
+                {
+                    types: ['image'],
+                    attributes: {
+                        caption: {
+                            default: null,
+                            parseHTML: (element) => normalise(element.getAttribute('data-caption')),
+                            renderHTML: (attributes) => {
+                                const caption = normalise(attributes.caption)
 
-                return caption === null ? {} : { 'data-caption': caption };
-              },
-            },
-          },
+                                return caption === null ? {} : { 'data-caption': caption }
+                            },
+                        },
+                    },
+                },
+            ]
         },
-      ];
-    },
 
-    addProseMirrorPlugins() {
-      const editor = this.editor;
+        addProseMirrorPlugins() {
+            const editor = this.editor
 
-      return [
-        new Plugin({
-          key: new PluginKey('arteImageCaptionMirror'),
-          view: () => ({
-            update: () => mirror(editor.options.element),
-          }),
-        }),
-      ];
-    },
-  });
-};
+            return [
+                new Plugin({
+                    key: new PluginKey('arteImageCaptionMirror'),
+                    view: () => ({
+                        update: () => mirror(editor.options.element),
+                    }),
+                }),
+            ]
+        },
+    })
+}

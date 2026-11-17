@@ -11,79 +11,74 @@
  * back, so a typeface survives the save and the server side renderer.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor font family extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor font family extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Mark, mergeAttributes } = tiptap;
+    const { Mark, mergeAttributes } = tiptap
 
-  // A font stack and nothing else: this value is written into an attribute nothing
-  // downstream validates. The PHP half applies the same rule to what comes back in.
-  const clean = (family) =>
-    typeof family === 'string' &&
-    family.length <= 200 &&
-    /^[\p{L}\p{N} ,'"\-_]+$/u.test(family.trim())
-      ? family.trim()
-      : null;
+    // A font stack and nothing else: this value is written into an attribute nothing
+    // downstream validates. The PHP half applies the same rule to what comes back in.
+    const clean = (family) =>
+        typeof family === 'string' &&
+        family.length <= 200 &&
+        /^[\p{L}\p{N} ,'"\-_]+$/u.test(family.trim())
+            ? family.trim()
+            : null
 
-  return Mark.create({
-    name: 'fontFamily',
+    return Mark.create({
+        name: 'fontFamily',
 
-    addOptions() {
-      return { HTMLAttributes: {} };
-    },
-
-    addAttributes() {
-      return {
-        family: {
-          default: null,
-          parseHTML: (element) => clean(element.style?.fontFamily),
-          renderHTML: (attributes) => {
-            const family = clean(attributes.family);
-
-            return family ? { style: `font-family: ${family}` } : {};
-          },
+        addOptions() {
+            return { HTMLAttributes: {} }
         },
-      };
-    },
 
-    parseHTML() {
-      return [
-        {
-          tag: 'span',
-          // Spans without a family are left to whichever mark does claim them.
-          getAttrs: (element) =>
-            clean(element.style?.fontFamily) ? {} : false,
+        addAttributes() {
+            return {
+                family: {
+                    default: null,
+                    parseHTML: (element) => clean(element.style?.fontFamily),
+                    renderHTML: (attributes) => {
+                        const family = clean(attributes.family)
+
+                        return family ? { style: `font-family: ${family}` } : {}
+                    },
+                },
+            }
         },
-      ];
-    },
 
-    renderHTML({ HTMLAttributes }) {
-      return [
-        'span',
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-        0,
-      ];
-    },
+        parseHTML() {
+            return [
+                {
+                    tag: 'span',
+                    // Spans without a family are left to whichever mark does claim them.
+                    getAttrs: (element) => (clean(element.style?.fontFamily) ? {} : false),
+                },
+            ]
+        },
 
-    addCommands() {
-      return {
-        setFontFamily:
-          (family) =>
-          ({ commands }) =>
-            commands.setMark(this.name, { family }),
+        renderHTML({ HTMLAttributes }) {
+            return ['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+        },
 
-        unsetFontFamily:
-          () =>
-          ({ commands }) =>
-            commands.unsetMark(this.name),
-      };
-    },
-  });
-};
+        addCommands() {
+            return {
+                setFontFamily:
+                    (family) =>
+                    ({ commands }) =>
+                        commands.setMark(this.name, { family }),
+
+                unsetFontFamily:
+                    () =>
+                    ({ commands }) =>
+                        commands.unsetMark(this.name),
+            }
+        },
+    })
+}

@@ -24,7 +24,17 @@ class AnnouncementFactory extends Factory
             'slug' => function (array $attributes) {
                 return Str::slug($attributes['title']);
             },
-            'content' => fake()->randomHtml(),
+            'content' => fake()
+                ->filamentRichContent()
+                ->heading()
+                ->paragraphs(
+                    count: 3,
+                    links: true,
+                    bold: true,
+                    italic: true,
+                )
+                ->bulletList()
+                ->toHtml(),
             'status' => fake()->randomElement(StatusType::class),
             'published_at' => null,
         ];

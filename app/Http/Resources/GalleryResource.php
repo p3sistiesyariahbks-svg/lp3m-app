@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Kisame76\FilamentAdvancedRichEditor\RichEditor\AdvancedRichContentRenderer;
 
 class GalleryResource extends JsonResource
 {
@@ -21,7 +22,9 @@ class GalleryResource extends JsonResource
             'slug' => $this->slug,
             'images' => GalleryPhotoResource::collection($this->whenLoaded('photos')),
             'video_url' => $this->video_url,
-            'content' => $this->content,
+            'content' => AdvancedRichContentRenderer::make($this->content)
+                ->attribute($this->resource->getRichContentAttribute('content'))
+                ->toHtml(),
             'description' => $this->description,
             'status' => $this->status,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),

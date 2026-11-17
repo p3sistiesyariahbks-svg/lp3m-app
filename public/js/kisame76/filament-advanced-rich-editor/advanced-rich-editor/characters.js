@@ -20,113 +20,109 @@
  * assembled from a variable is a name it can no longer see.
  */
 const CLASSES = {
-  popup: 'fi-arte-characters-popup',
-  header: 'fi-arte-characters-header',
-  title: 'fi-arte-characters-title',
-  close: 'fi-arte-characters-close',
-  search: 'fi-arte-characters-search',
-  tabs: 'fi-arte-characters-tabs',
-  tab: 'fi-arte-characters-tab',
-  grid: 'fi-arte-characters-grid',
-  empty: 'fi-arte-characters-empty',
-  item: 'fi-arte-characters-item',
-};
+    popup: 'fi-arte-characters-popup',
+    header: 'fi-arte-characters-header',
+    title: 'fi-arte-characters-title',
+    close: 'fi-arte-characters-close',
+    search: 'fi-arte-characters-search',
+    tabs: 'fi-arte-characters-tabs',
+    tab: 'fi-arte-characters-tab',
+    grid: 'fi-arte-characters-grid',
+    empty: 'fi-arte-characters-empty',
+    item: 'fi-arte-characters-item',
+}
 
 /**
  * Wider than the emoji picker by two columns. These are letters rather than pictures, so
  * they are drawn at text size and eight of them fit where six emoji did.
  */
-const WIDTH = 24 * 16;
+const WIDTH = 24 * 16
 
-const RECENT_KEY = 'arte-characters-recent';
+const RECENT_KEY = 'arte-characters-recent'
 
-let shell = null;
-let shellPromise = null;
+let shell = null
+let shellPromise = null
 
 function loadShell() {
-  if (!shellPromise) {
-    const here = new URL(import.meta.url);
-    const url = new URL('./glyph-picker.js', here);
+    if (!shellPromise) {
+        const here = new URL(import.meta.url)
+        const url = new URL('./glyph-picker.js', here)
 
-    url.search = here.search;
+        url.search = here.search
 
-    shellPromise = import(url.href)
-      .then((module) => (shell = module))
-      .catch((error) => {
-        console.error(
-          'The advanced rich editor could not load its glyph picker:',
-          error,
-        );
+        shellPromise = import(url.href)
+            .then((module) => (shell = module))
+            .catch((error) => {
+                console.error('The advanced rich editor could not load its glyph picker:', error)
 
-        shellPromise = null;
+                shellPromise = null
 
-        return null;
-      });
-  }
+                return null
+            })
+    }
 
-  return shellPromise;
+    return shellPromise
 }
 
-let load = null;
+let load = null
 
 function loadCharacters() {
-  if (!load) {
-    load = shell.dataLoader(
-      import.meta.url,
-      './character-data.js',
-      'special characters list',
-    );
-  }
+    if (!load) {
+        load = shell.dataLoader(import.meta.url, './character-data.js', 'special characters list')
+    }
 
-  return load();
+    return load()
 }
 
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor characters extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor characters extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Extension } = tiptap;
+    const { Extension } = tiptap
 
-  // Warmed as soon as the extension loads, so the first press of the button opens rather
-  // than waits.
-  loadShell();
+    // Warmed as soon as the extension loads, so the first press of the button opens rather
+    // than waits.
+    loadShell()
 
-  return Extension.create({
-    name: 'arteCharacters',
+    return Extension.create({
+        name: 'arteCharacters',
 
-    addCommands() {
-      return {
-        insertCharacter:
-          (character) =>
-          ({ commands }) =>
-            commands.insertContent(character),
+        addCommands() {
+            return {
+                insertCharacter:
+                    (character) =>
+                    ({ commands }) =>
+                        commands.insertContent(character),
 
-        openCharacterPicker:
-          (anchor, labels) =>
-          ({ editor }) => {
-            loadShell().then(() =>
-              shell?.open(editor, anchor, {
-                name: 'characters',
-                classes: CLASSES,
-                labels,
-                recentKey: RECENT_KEY,
-                width: WIDTH,
-                load: loadCharacters,
-                onPick: (target, character) =>
-                  target.chain().focus().insertCharacter(character).run(),
-              }),
-            );
+                // `labels` is optional: the field writes them on the element the editor is
+                // mounted on, as `data-arte-characters`, and the shell reads them there.
+                openCharacterPicker:
+                    (anchor, labels = null) =>
+                    ({ editor }) => {
+                        loadShell().then(() =>
+                            shell?.open(editor, anchor, {
+                                name: 'characters',
+                                classes: CLASSES,
+                                labels,
+                                settings: 'arteCharacters',
+                                recentKey: RECENT_KEY,
+                                width: WIDTH,
+                                load: loadCharacters,
+                                onPick: (target, character) =>
+                                    target.chain().focus().insertCharacter(character).run(),
+                            }),
+                        )
 
-            return true;
-          },
-      };
-    },
-  });
-};
+                        return true
+                    },
+            }
+        },
+    })
+}

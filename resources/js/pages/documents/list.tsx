@@ -159,7 +159,7 @@ export default function DocumentListPage() {
           </div>
 
           {categories.length > 0 && (
-            <aside className="sticky top-24 w-full shrink-0 lg:max-w-80">
+            <aside className="w-full shrink-0 lg:sticky lg:top-24 lg:max-w-80">
               <Card className="gap-4 p-6">
                 <CardHeader className="p-0">
                   <CardTitle className="text-xl font-medium tracking-tight">

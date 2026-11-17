@@ -10,79 +10,79 @@
  * nothing else can collide with it.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor style extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor style extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Mark, mergeAttributes } = tiptap;
+    const { Mark, mergeAttributes } = tiptap
 
-  return Mark.create({
-    name: 'styleClass',
+    return Mark.create({
+        name: 'styleClass',
 
-    addOptions() {
-      return {
-        HTMLAttributes: {},
-      };
-    },
-
-    addAttributes() {
-      return {
-        name: {
-          default: null,
-          parseHTML: (element) => element.getAttribute('data-style') || null,
-          renderHTML: (attributes) =>
-            attributes.name ? { 'data-style': attributes.name } : {},
+        addOptions() {
+            return {
+                HTMLAttributes: {},
+            }
         },
-      };
-    },
 
-    parseHTML() {
-      return [
-        {
-          tag: 'span[data-style]',
-          // Only spans that actually carry a style, so this rule never competes
-          // with Filament's own span based marks.
-          getAttrs: (element) =>
-            element.getAttribute('data-style') ? {} : false,
+        addAttributes() {
+            return {
+                name: {
+                    default: null,
+                    parseHTML: (element) => element.getAttribute('data-style') || null,
+                    renderHTML: (attributes) =>
+                        attributes.name ? { 'data-style': attributes.name } : {},
+                },
+            }
         },
-      ];
-    },
 
-    renderHTML({ HTMLAttributes }) {
-      return [
-        'span',
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-        0,
-      ];
-    },
+        parseHTML() {
+            return [
+                {
+                    tag: 'span[data-style]',
+                    // Only spans that actually carry a style, so this rule never competes
+                    // with Filament's own span based marks.
+                    getAttrs: (element) =>
+                        element.getAttribute('data-style') ? {} : false,
+                },
+            ]
+        },
 
-    addCommands() {
-      return {
-        setStyleClass:
-          (name) =>
-          ({ commands }) =>
-            commands.setMark(this.name, { name }),
+        renderHTML({ HTMLAttributes }) {
+            return [
+                'span',
+                mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+                0,
+            ]
+        },
 
-        unsetStyleClass:
-          () =>
-          ({ commands }) =>
-            commands.unsetMark(this.name),
+        addCommands() {
+            return {
+                setStyleClass:
+                    (name) =>
+                    ({ commands }) =>
+                        commands.setMark(this.name, { name }),
 
-        // One style at a time, the same as the block half: picking the one the text
-        // already has takes it back off.
-        toggleStyleClass:
-          (name) =>
-          ({ editor, commands }) =>
-            editor.isActive(this.name, { name })
-              ? commands.unsetStyleClass()
-              : commands.setStyleClass(name),
-      };
-    },
-  });
-};
+                unsetStyleClass:
+                    () =>
+                    ({ commands }) =>
+                        commands.unsetMark(this.name),
+
+                // One style at a time, the same as the block half: picking the one the text
+                // already has takes it back off.
+                toggleStyleClass:
+                    (name) =>
+                    ({ editor, commands }) =>
+                        editor.isActive(this.name, { name })
+                            ? commands.unsetStyleClass()
+                            : commands.setStyleClass(name),
+            }
+        },
+    })
+}

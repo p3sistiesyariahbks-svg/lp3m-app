@@ -16,75 +16,75 @@
  * sanitiser allow list.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor text background extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor text background extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Mark, mergeAttributes } = tiptap;
+    const { Mark, mergeAttributes } = tiptap
 
-  return Mark.create({
-    name: 'textBackground',
+    return Mark.create({
+        name: 'textBackground',
 
-    addOptions() {
-      return { HTMLAttributes: {} };
-    },
-
-    addAttributes() {
-      return {
-        color: {
-          default: null,
-          parseHTML: (element) =>
-            element.getAttribute('data-color') ||
-            element.style?.backgroundColor ||
-            null,
-          renderHTML: (attributes) =>
-            attributes.color
-              ? {
-                  'data-color': attributes.color,
-                  style: `background-color: ${attributes.color}`,
-                }
-              : {},
+        addOptions() {
+            return { HTMLAttributes: {} }
         },
-      };
-    },
 
-    parseHTML() {
-      return [
-        {
-          // Outranks the bundled highlight, which claims every `mark` at the
-          // default priority of 50.
-          tag: 'mark[data-color]',
-          priority: 51,
+        addAttributes() {
+            return {
+                color: {
+                    default: null,
+                    parseHTML: (element) =>
+                        element.getAttribute('data-color') ||
+                        element.style?.backgroundColor ||
+                        null,
+                    renderHTML: (attributes) =>
+                        attributes.color
+                            ? {
+                                  'data-color': attributes.color,
+                                  style: `background-color: ${attributes.color}`,
+                              }
+                            : {},
+                },
+            }
         },
-      ];
-    },
 
-    renderHTML({ HTMLAttributes }) {
-      return [
-        'mark',
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-        0,
-      ];
-    },
+        parseHTML() {
+            return [
+                {
+                    // Outranks the bundled highlight, which claims every `mark` at the
+                    // default priority of 50.
+                    tag: 'mark[data-color]',
+                    priority: 51,
+                },
+            ]
+        },
 
-    addCommands() {
-      return {
-        setTextBackground:
-          (color) =>
-          ({ commands }) =>
-            commands.setMark(this.name, { color }),
+        renderHTML({ HTMLAttributes }) {
+            return [
+                'mark',
+                mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+                0,
+            ]
+        },
 
-        unsetTextBackground:
-          () =>
-          ({ commands }) =>
-            commands.unsetMark(this.name),
-      };
-    },
-  });
-};
+        addCommands() {
+            return {
+                setTextBackground:
+                    (color) =>
+                    ({ commands }) =>
+                        commands.setMark(this.name, { color }),
+
+                unsetTextBackground:
+                    () =>
+                    ({ commands }) =>
+                        commands.unsetMark(this.name),
+            }
+        },
+    })
+}

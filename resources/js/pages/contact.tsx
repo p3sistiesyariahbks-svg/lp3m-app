@@ -32,19 +32,19 @@ export default function ContactPage() {
       icon: MailIcon,
       title: 'Email',
       href: `mailto:${general.support_email}`,
-      label: general.support_email || '-',
+      label: general.support_email,
     },
     {
       icon: MapPinIcon,
       title: 'Office',
       href: getGoogleMapsUrl(general.latitude, general.longitude),
-      label: general.company_office || '-',
+      label: general.company_office,
     },
     {
       icon: PhoneIcon,
       title: 'Phone',
       href: `tel:${general.support_phone}`,
-      label: general.support_phone || '-',
+      label: general.support_phone,
     },
   ];
 
@@ -97,10 +97,7 @@ export default function ContactPage() {
 }
 
 function MapInfoLocation({ general }: { general: GeneralSettings }) {
-  const coordinate = [general.longitude, general.latitude] as [
-    number,
-    number,
-  ];
+  const coordinate = [general.longitude, general.latitude] as [number, number];
 
   return (
     <Card className="relative z-0 w-full p-4">
@@ -161,10 +158,7 @@ function MapInfoLocation({ general }: { general: GeneralSettings }) {
                   </p>
 
                   <Link
-                    href={getGoogleMapsUrl(
-                      general.latitude,
-                      general.longitude,
-                    )}
+                    href={getGoogleMapsUrl(general.latitude, general.longitude)}
                     className={cn(
                       buttonVariants({ size: 'sm' }),
                       'mt-4 w-full shadow-none',
@@ -193,13 +187,17 @@ function ContactInfoItem({ item }: { item: ContactInfo }) {
       <div className="min-w-0 flex-1 space-y-2">
         <h3 className="text-lg font-medium">{item.title}</h3>
 
-        <Link
-          href={item.href}
-          className="text-muted-foreground wrap-anywhere"
-          target="_blank"
-        >
-          {item.label}
-        </Link>
+        {item.label ? (
+          <Link
+            href={item.href}
+            className="text-muted-foreground wrap-anywhere"
+            target="_blank"
+          >
+            {item.label}
+          </Link>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        )}
       </div>
     </div>
   );

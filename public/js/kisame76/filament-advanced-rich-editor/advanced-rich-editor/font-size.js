@@ -12,109 +12,111 @@
  * database and through the PHP renderer.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor font size extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor font size extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Mark, mergeAttributes } = tiptap;
+    const { Mark, mergeAttributes } = tiptap
 
-  return Mark.create({
-    name: 'fontSize',
+    return Mark.create({
+        name: 'fontSize',
 
-    addOptions() {
-      return {
-        HTMLAttributes: {},
-        min: 8,
-        max: 96,
-        step: 1,
-        defaultSize: 16,
-        unit: 'px',
-      };
-    },
-
-    addAttributes() {
-      return {
-        size: {
-          default: null,
-          parseHTML: (element) => element.style?.fontSize || null,
-          renderHTML: (attributes) =>
-            attributes.size ? { style: `font-size: ${attributes.size}` } : {},
+        addOptions() {
+            return {
+                HTMLAttributes: {},
+                min: 8,
+                max: 96,
+                step: 1,
+                defaultSize: 16,
+                unit: 'px',
+            }
         },
-      };
-    },
 
-    parseHTML() {
-      return [
-        {
-          tag: 'span',
-          // Only spans that actually carry a size, so this rule never competes
-          // with Filament's own span based marks.
-          getAttrs: (element) => (element.style?.fontSize ? {} : false),
+        addAttributes() {
+            return {
+                size: {
+                    default: null,
+                    parseHTML: (element) => element.style?.fontSize || null,
+                    renderHTML: (attributes) =>
+                        attributes.size
+                            ? { style: `font-size: ${attributes.size}` }
+                            : {},
+                },
+            }
         },
-      ];
-    },
 
-    renderHTML({ HTMLAttributes }) {
-      return [
-        'span',
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-        0,
-      ];
-    },
+        parseHTML() {
+            return [
+                {
+                    tag: 'span',
+                    // Only spans that actually carry a size, so this rule never competes
+                    // with Filament's own span based marks.
+                    getAttrs: (element) => (element.style?.fontSize ? {} : false),
+                },
+            ]
+        },
 
-    addCommands() {
-      const clamp = (value) =>
-        Math.min(this.options.max, Math.max(this.options.min, value));
+        renderHTML({ HTMLAttributes }) {
+            return [
+                'span',
+                mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+                0,
+            ]
+        },
 
-      const toNumber = (value) => {
-        const parsed = Number.parseFloat(value);
+        addCommands() {
+            const clamp = (value) =>
+                Math.min(this.options.max, Math.max(this.options.min, value))
 
-        return Number.isFinite(parsed) ? parsed : null;
-      };
+            const toNumber = (value) => {
+                const parsed = Number.parseFloat(value)
 
-      return {
-        setFontSize:
-          (size) =>
-          ({ chain }) => {
-            const value = toNumber(size);
-
-            if (value === null) {
-              return chain().unsetMark(this.name).run();
+                return Number.isFinite(parsed) ? parsed : null
             }
 
-            return chain()
-              .setMark(this.name, {
-                size: `${clamp(value)}${this.options.unit}`,
-              })
-              .run();
-          },
+            return {
+                setFontSize:
+                    (size) =>
+                    ({ chain }) => {
+                        const value = toNumber(size)
 
-        unsetFontSize:
-          () =>
-          ({ chain }) =>
-            chain().unsetMark(this.name).run(),
+                        if (value === null) {
+                            return chain().unsetMark(this.name).run()
+                        }
 
-        /* Steps relative to whatever the cursor currently sits in. */
-        adjustFontSize:
-          (delta) =>
-          ({ editor, chain }) => {
-            const current =
-              toNumber(editor.getAttributes(this.name)?.size) ??
-              this.options.defaultSize;
+                        return chain()
+                            .setMark(this.name, {
+                                size: `${clamp(value)}${this.options.unit}`,
+                            })
+                            .run()
+                    },
 
-            return chain()
-              .setMark(this.name, {
-                size: `${clamp(current + delta)}${this.options.unit}`,
-              })
-              .run();
-          },
-      };
-    },
-  });
-};
+                unsetFontSize:
+                    () =>
+                    ({ chain }) =>
+                        chain().unsetMark(this.name).run(),
+
+                /* Steps relative to whatever the cursor currently sits in. */
+                adjustFontSize:
+                    (delta) =>
+                    ({ editor, chain }) => {
+                        const current =
+                            toNumber(editor.getAttributes(this.name)?.size) ??
+                            this.options.defaultSize
+
+                        return chain()
+                            .setMark(this.name, {
+                                size: `${clamp(current + delta)}${this.options.unit}`,
+                            })
+                            .run()
+                    },
+            }
+        },
+    })
+}

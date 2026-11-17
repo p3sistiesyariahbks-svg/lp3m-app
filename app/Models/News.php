@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
-use Kisame76\FilamentAdvancedRichEditor\FileAttachmentProviders\SpatieMediaLibraryFileAttachmentProvider;
+use Kisame76\FilamentAdvancedRichEditor\RichEditor\Plugins\SpatieMediaLibraryPlugin;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Mews\Purifier\Casts\CleanHtml;
 use Rankbeam\Seo\Traits\HasSEO;
@@ -179,7 +179,9 @@ class News extends Model implements HasMedia, HasRichContent, Viewable
     public function setUpRichContent(): void
     {
         $this->registerRichContent('content')
-            ->fileAttachmentProvider(SpatieMediaLibraryFileAttachmentProvider::make());
+            ->plugins([
+                SpatieMediaLibraryPlugin::make('rich-editor'),
+            ]);
     }
 
     /**

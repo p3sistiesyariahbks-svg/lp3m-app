@@ -23,11 +23,15 @@ export type SocialLinksSettings = {
   discord?: string;
 };
 
+export type DefaultTheme = 'system' | 'light' | 'dark';
+
+export type LayoutStyle = 'left' | 'right' | 'top' | 'bottom' | 'cover';
+
 export type AppearanceSettings = {
-  default_theme: 'system' | 'light' | 'dark';
+  default_theme: DefaultTheme;
   brand_color: string;
   items_per_page: number;
-  layout_style: 'left' | 'right' | 'top' | 'bottom' | 'cover';
+  layout_style: LayoutStyle;
   media_path?: string;
   media_alt?: string;
   media_size: string;

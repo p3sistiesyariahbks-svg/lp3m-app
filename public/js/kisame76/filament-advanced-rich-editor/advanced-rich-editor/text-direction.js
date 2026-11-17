@@ -17,90 +17,90 @@
  * only, which is why they carry their own names instead of shadowing that one.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor text direction extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor text direction extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Extension } = tiptap;
+    const { Extension } = tiptap
 
-  return Extension.create({
-    name: 'arteTextDirection',
+    return Extension.create({
+        name: 'arteTextDirection',
 
-    addOptions() {
-      return {
-        types: ['paragraph', 'heading', 'blockquote', 'listItem', 'codeBlock'],
-      };
-    },
-
-    addGlobalAttributes() {
-      return [
-        {
-          types: this.options.types,
-          attributes: {
-            dir: {
-              default: null,
-              parseHTML: (element) => {
-                const dir = element.getAttribute('dir')?.toLowerCase();
-
-                return dir === 'ltr' || dir === 'rtl' ? dir : null;
-              },
-              renderHTML: (attributes) =>
-                attributes.dir ? { dir: attributes.dir } : {},
-            },
-          },
+        addOptions() {
+            return {
+                types: ['paragraph', 'heading', 'blockquote', 'listItem', 'codeBlock'],
+            }
         },
-      ];
-    },
 
-    addCommands() {
-      const write =
-        (dir) =>
-        ({ state, tr, dispatch }) => {
-          const types = new Set(
-            this.options.types.filter((type) => state.schema.nodes[type]),
-          );
+        addGlobalAttributes() {
+            return [
+                {
+                    types: this.options.types,
+                    attributes: {
+                        dir: {
+                            default: null,
+                            parseHTML: (element) => {
+                                const dir = element.getAttribute('dir')?.toLowerCase()
 
-          const { from, to } = state.selection;
+                                return dir === 'ltr' || dir === 'rtl' ? dir : null
+                            },
+                            renderHTML: (attributes) =>
+                                attributes.dir ? { dir: attributes.dir } : {},
+                        },
+                    },
+                },
+            ]
+        },
 
-          let changed = false;
+        addCommands() {
+            const write =
+                (dir) =>
+                ({ state, tr, dispatch }) => {
+                    const types = new Set(
+                        this.options.types.filter((type) => state.schema.nodes[type]),
+                    )
 
-          state.doc.nodesBetween(from, to, (node, pos) => {
-            if (!types.has(node.type.name) || node.attrs.dir === dir) {
-              return;
+                    const { from, to } = state.selection
+
+                    let changed = false
+
+                    state.doc.nodesBetween(from, to, (node, pos) => {
+                        if (!types.has(node.type.name) || node.attrs.dir === dir) {
+                            return
+                        }
+
+                        changed = true
+
+                        if (dispatch) {
+                            tr.setNodeMarkup(pos, undefined, { ...node.attrs, dir })
+                        }
+                    })
+
+                    return changed
+                }
+
+            return {
+                setBlockDirection: (dir) => write(dir),
+
+                unsetBlockDirection: () => write(null),
+
+                // Picking the direction a block already has takes it back off, the way the
+                // headings dropdown returns a heading to a paragraph. Without it the only
+                // way back to the field's own direction would be the other button, which
+                // says something different.
+                toggleBlockDirection:
+                    (dir) =>
+                    ({ editor, commands }) =>
+                        editor.isActive({ dir })
+                            ? commands.unsetBlockDirection()
+                            : commands.setBlockDirection(dir),
             }
-
-            changed = true;
-
-            if (dispatch) {
-              tr.setNodeMarkup(pos, undefined, { ...node.attrs, dir });
-            }
-          });
-
-          return changed;
-        };
-
-      return {
-        setBlockDirection: (dir) => write(dir),
-
-        unsetBlockDirection: () => write(null),
-
-        // Picking the direction a block already has takes it back off, the way the
-        // headings dropdown returns a heading to a paragraph. Without it the only
-        // way back to the field's own direction would be the other button, which
-        // says something different.
-        toggleBlockDirection:
-          (dir) =>
-          ({ editor, commands }) =>
-            editor.isActive({ dir })
-              ? commands.unsetBlockDirection()
-              : commands.setBlockDirection(dir),
-      };
-    },
-  });
-};
+        },
+    })
+}

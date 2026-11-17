@@ -15,54 +15,55 @@
  * around it is rewritten.
  */
 export default () => {
-  const tiptap = window.FilamentRichEditor?.tiptap?.core;
+    const tiptap = window.FilamentRichEditor?.tiptap?.core
 
-  if (!tiptap) {
-    console.error(
-      'The advanced rich editor anchor extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
-    );
+    if (!tiptap) {
+        console.error(
+            'The advanced rich editor anchor extension needs window.FilamentRichEditor.tiptap, which Filament did not expose.',
+        )
 
-    return null;
-  }
+        return null
+    }
 
-  const { Extension } = tiptap;
+    const { Extension } = tiptap
 
-  // Mirrors the PHP half: an id with a space in it survives the sanitiser and is still
-  // not a fragment any browser will jump to, so it is dropped rather than stored.
-  const ID_PATTERN = /^[A-Za-z0-9_\-.:]+$/;
+    // Mirrors the PHP half: an id with a space in it survives the sanitiser and is still
+    // not a fragment any browser will jump to, so it is dropped rather than stored.
+    const ID_PATTERN = /^[A-Za-z0-9_\-.:]+$/
 
-  const normalise = (value) => {
-    const id = typeof value === 'string' ? value.trim() : '';
+    const normalise = (value) => {
+        const id = typeof value === 'string' ? value.trim() : ''
 
-    return id && ID_PATTERN.test(id) ? id : null;
-  };
+        return id && ID_PATTERN.test(id) ? id : null
+    }
 
-  return Extension.create({
-    name: 'arteAnchor',
+    return Extension.create({
+        name: 'arteAnchor',
 
-    addOptions() {
-      return {
-        types: ['heading'],
-      };
-    },
-
-    addGlobalAttributes() {
-      return [
-        {
-          types: this.options.types,
-          attributes: {
-            id: {
-              default: null,
-              parseHTML: (element) => normalise(element.getAttribute('id')),
-              renderHTML: (attributes) => {
-                const id = normalise(attributes.id);
-
-                return id ? { id } : {};
-              },
-            },
-          },
+        addOptions() {
+            return {
+                types: ['heading'],
+            }
         },
-      ];
-    },
-  });
-};
+
+        addGlobalAttributes() {
+            return [
+                {
+                    types: this.options.types,
+                    attributes: {
+                        id: {
+                            default: null,
+                            parseHTML: (element) =>
+                                normalise(element.getAttribute('id')),
+                            renderHTML: (attributes) => {
+                                const id = normalise(attributes.id)
+
+                                return id ? { id } : {}
+                            },
+                        },
+                    },
+                },
+            ]
+        },
+    })
+}
