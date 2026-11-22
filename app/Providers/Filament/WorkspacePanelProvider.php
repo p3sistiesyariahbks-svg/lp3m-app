@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Workspace\Pages\Auth\EditProfile;
 use App\Settings\AppearanceSettings;
 use AzGasim\FilamentUnsavedChangesModal\FilamentUnsavedChangesModalPlugin;
 use Caresome\FilamentAuthDesigner\AuthDesignerPlugin;
@@ -64,6 +65,7 @@ class WorkspacePanelProvider extends PanelProvider
                 Authenticate::class,
                 LogsOutBannedUser::class,
             ])
+            ->profile(EditProfile::class, isSimple: false)
             ->plugins([
                 AuthDesignerPlugin::make()
                     ->defaults(fn (AuthPageConfig $config) => $config

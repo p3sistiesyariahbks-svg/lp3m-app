@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Registrations\Tables;
 
-use App\Filament\Admin\Resources\Registrations\Actions\ConfirmPaymentAction;
+use App\Filament\Admin\Resources\Registrations\Actions\ReviewRegistrationAction;
 use App\Models\Registration;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
@@ -38,17 +38,23 @@ class RegistrationsTable
                     ->words(10)
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('latestPayment.status')
-                    ->label('Payment Status')
+                TextColumn::make('status')
+                    ->label('Status')
                     ->badge()
-                    ->searchable()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->label('Created')
+                TextColumn::make('submitted_at')
+                    ->label('Submitted At')
                     ->dateTime()
-                    ->since()
-                    ->isoDateTimeTooltip()
+                    ->placeholder('Not submitted')
                     ->sortable(),
+                TextColumn::make('creator.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('editor.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
@@ -72,7 +78,7 @@ class RegistrationsTable
                     ViewAction::make()
                         ->color('gray')
                         ->hiddenLabel(),
-                    ConfirmPaymentAction::make()
+                    ReviewRegistrationAction::make()
                         ->color('gray')
                         ->hiddenLabel()
                         ->icon(Heroicon::OutlinedCheckCircle),

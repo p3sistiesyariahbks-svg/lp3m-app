@@ -4,6 +4,7 @@ namespace App\Filament\Workspace\Resources\Placements\Tables;
 
 use App\Filament\Workspace\Resources\Placements\Actions\RegisterPlacementAction;
 use App\Models\Placement;
+use Carbon\CarbonInterface;
 use Devletes\FilamentProgressBar\Tables\Columns\ProgressBarColumn;
 use Filament\Actions\ViewAction;
 use Filament\Support\Enums\FontWeight;
@@ -56,7 +57,7 @@ class PlacementsTable
                                 ->grow(false),
                             TextColumn::make('period.program_starts_at')
                                 ->formatStateUsing(
-                                    fn (Placement $record): string => "{$record->period->program_starts_at->toDateString()} – {$record->period->program_ends_at->toDateString()}",
+                                    fn (CarbonInterface $state, Placement $record): string => "{$state->toDateString()} – {$record->period->program_ends_at->toDateString()}",
                                 )
                                 ->sortable()
                                 ->wrap()
@@ -69,7 +70,7 @@ class PlacementsTable
                                 ->grow(false),
                             TextColumn::make('period.registration_opens_at')
                                 ->formatStateUsing(
-                                    fn (Placement $record): string => "{$record->period->registration_opens_at->toDateString()} – {$record->period->registration_closes_at->toDateString()}",
+                                    fn (CarbonInterface $state, Placement $record): string => "{$state->toDateString()} – {$record->period->registration_closes_at->toDateString()}",
                                 )
                                 ->sortable()
                                 ->wrap()

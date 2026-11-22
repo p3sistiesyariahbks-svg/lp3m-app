@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Periods\Tables;
 
 use App\Models\Period;
+use Carbon\CarbonInterface;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -33,12 +34,12 @@ class PeriodsTable
                     ->alignEnd(),
                 TextColumn::make('program_starts_at')
                     ->label('Program Date')
-                    ->formatStateUsing(fn (Period $record): string => "{$record->program_starts_at->toDateString()} – {$record->program_ends_at->toDateString()}"
+                    ->formatStateUsing(fn (CarbonInterface $state, Period $record): string => "{$state->toDateString()} – {$record->program_ends_at->toDateString()}"
                     )
                     ->sortable(),
                 TextColumn::make('registration_opens_at')
                     ->label('Registration Date')
-                    ->formatStateUsing(fn (Period $record): string => "{$record->registration_opens_at->toDateString()} – {$record->registration_closes_at->toDateString()}"
+                    ->formatStateUsing(fn (CarbonInterface $state, Period $record): string => "{$state->toDateString()} – {$record->registration_closes_at->toDateString()}"
                     )
                     ->sortable(),
                 TextColumn::make('fee')

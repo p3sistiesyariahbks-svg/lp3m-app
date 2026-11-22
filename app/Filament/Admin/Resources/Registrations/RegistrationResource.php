@@ -6,7 +6,6 @@ use App\Filament\Admin\Resources\Registrations\Pages\ListRegistrations;
 use App\Filament\Admin\Resources\Registrations\Pages\ViewRegistration;
 use App\Filament\Admin\Resources\Registrations\Schemas\RegistrationInfolist;
 use App\Filament\Admin\Resources\Registrations\Tables\RegistrationsTable;
-use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationStatsOverview;
 use App\Models\Registration;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -40,23 +39,13 @@ class RegistrationResource extends Resource
                 'user',
                 'period',
                 'placement.location',
-                'latestPayment.media',
-                'payments.media',
-                'payments.verifier',
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            RelationManagers\PaymentsRelationManager::class,
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            RegistrationStatsOverview::class,
+            //
         ];
     }
 

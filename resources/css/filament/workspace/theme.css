@@ -1,8 +1,8 @@
-@import '../edinburgh.css';
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../vendor/hugomyb/filament-media-action/resources/views/**/*.blade.php';
 
 @layer base {
     .fpb-root {

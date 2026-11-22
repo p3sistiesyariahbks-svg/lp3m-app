@@ -3,8 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Admin\Clusters\Settings\SettingsCluster;
+use App\Filament\Admin\Pages\Auth\EditProfile;
 use App\Filament\Admin\Pages\ManageGeneral;
 use App\Filament\Admin\Resources\Announcements\AnnouncementResource;
+use App\Filament\Admin\Resources\Departments\DepartmentResource;
 use App\Filament\Admin\Resources\DocumentCategories\DocumentCategoryResource;
 use App\Filament\Admin\Resources\Documents\DocumentResource;
 use App\Filament\Admin\Resources\GalleryCategories\GalleryCategoryResource;
@@ -103,7 +105,7 @@ class AdminPanelProvider extends PanelProvider
                     ->items([
                         NavigationItem::make('Dashboard')
                             ->icon(Heroicon::OutlinedHome)
-                            ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.pages.dashboard'))
+                            ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.pages.dashboard'))
                             ->url(fn (): string => Dashboard::getUrl()),
                     ])
                     ->groups([
@@ -111,11 +113,11 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 NavigationItem::make('Add News')
                                     ->icon(Heroicon::OutlinedPlus)
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.news.create'))
+                                    ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.news.create'))
                                     ->url(fn (): string => NewsResource::getUrl('create')),
                                 NavigationItem::make(NewsResource::getNavigationLabel())
                                     ->icon(NewsResource::getNavigationIcon())
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs([
+                                    ->activeWhen(fn (): bool => original_request()->routeIs([
                                         'filament.admin.resources.news.index',
                                         'filament.admin.resources.news.edit',
                                     ]))
@@ -126,11 +128,11 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 NavigationItem::make('Add Page')
                                     ->icon(Heroicon::OutlinedPlus)
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.pages.create'))
+                                    ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.pages.create'))
                                     ->url(fn (): string => PageResource::getUrl('create')),
                                 NavigationItem::make(PageResource::getNavigationLabel())
                                     ->icon(PageResource::getNavigationIcon())
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs([
+                                    ->activeWhen(fn (): bool => original_request()->routeIs([
                                         'filament.admin.resources.pages.index',
                                         'filament.admin.resources.pages.edit',
                                     ]))
@@ -140,11 +142,11 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 NavigationItem::make('Add Announcement')
                                     ->icon(Heroicon::OutlinedPlus)
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.announcements.create'))
+                                    ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.announcements.create'))
                                     ->url(fn (): string => AnnouncementResource::getUrl('create')),
                                 NavigationItem::make(AnnouncementResource::getNavigationLabel())
                                     ->icon(AnnouncementResource::getNavigationIcon())
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs([
+                                    ->activeWhen(fn (): bool => original_request()->routeIs([
                                         'filament.admin.resources.announcements.index',
                                         'filament.admin.resources.announcements.edit',
                                     ]))
@@ -154,11 +156,11 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 NavigationItem::make('Add Document')
                                     ->icon(Heroicon::OutlinedPlus)
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.documents.create'))
+                                    ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.documents.create'))
                                     ->url(fn (): string => DocumentResource::getUrl('create')),
                                 NavigationItem::make(DocumentResource::getNavigationLabel())
                                     ->icon(DocumentResource::getNavigationIcon())
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs([
+                                    ->activeWhen(fn (): bool => original_request()->routeIs([
                                         'filament.admin.resources.documents.index',
                                         'filament.admin.resources.documents.edit',
                                     ]))
@@ -175,11 +177,11 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 NavigationItem::make('Add Partner')
                                     ->icon(Heroicon::OutlinedPlus)
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.partners.create'))
+                                    ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.resources.partners.create'))
                                     ->url(fn (): string => PartnerResource::getUrl('create')),
                                 NavigationItem::make(PartnerResource::getNavigationLabel())
                                     ->icon(PartnerResource::getNavigationIcon())
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs([
+                                    ->activeWhen(fn (): bool => original_request()->routeIs([
                                         'filament.admin.resources.partners.index',
                                         'filament.admin.resources.partners.edit',
                                     ]))
@@ -187,6 +189,7 @@ class AdminPanelProvider extends PanelProvider
                             ]),
                         NavigationGroup::make('Activity')
                             ->items([
+                                ...DepartmentResource::getNavigationItems(),
                                 ...LocationResource::getNavigationItems(),
                                 ...PeriodResource::getNavigationItems(),
                                 ...RegistrationResource::getNavigationItems(),
@@ -198,11 +201,12 @@ class AdminPanelProvider extends PanelProvider
                                 ...RoleResource::getNavigationItems(),
                                 NavigationItem::make(SettingsCluster::getNavigationLabel())
                                     ->icon(SettingsCluster::getNavigationIcon())
-                                    ->isActiveWhen(fn (): bool => original_request()->routeIs('filament.admin.settings.*'))
+                                    ->activeWhen(fn (): bool => original_request()->routeIs('filament.admin.settings.*'))
                                     ->url(fn (): string => ManageGeneral::getUrl()),
                             ]),
                     ]);
             })
+            ->profile(EditProfile::class, isSimple: false)
             ->plugins([
                 AuthDesignerPlugin::make()
                     ->defaults(fn (AuthPageConfig $config) => $config

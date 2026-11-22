@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Registrations\Pages;
 
-use App\Filament\Admin\Resources\Registrations\Actions\ConfirmPaymentAction;
+use App\Filament\Admin\Resources\Registrations\Actions\ReviewRegistrationAction;
 use App\Filament\Admin\Resources\Registrations\RegistrationResource;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -13,7 +13,7 @@ class ViewRegistration extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            ConfirmPaymentAction::make(),
+            ReviewRegistrationAction::make(),
         ];
     }
 }

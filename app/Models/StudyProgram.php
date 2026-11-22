@@ -2,26 +2,25 @@
 
 namespace App\Models;
 
-use App\Enums\PaymentStatus;
-use Database\Factories\PaymentFactory;
+use App\Enums\DegreeLevel;
+use Database\Factories\StudyProgramFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Mattiverse\Userstamps\Traits\Userstamps;
 
-class Payment extends Model implements HasMedia
+class StudyProgram extends Model
 {
-    /** @use HasFactory<PaymentFactory> */
-    use HasFactory, HasUuids, InteractsWithMedia;
+    /** @use HasFactory<StudyProgramFactory> */
+    use HasFactory, HasUuids, Userstamps;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'payments';
+    protected $table = 'study_programs';
 
     /**
      * The primary key associated with the table.
@@ -57,12 +56,11 @@ class Payment extends Model implements HasMedia
      * @var list<string>
      */
     protected $fillable = [
-        'registration_id',
-        'amount',
-        'status',
-        'verified_by',
-        'verified_at',
-        'note',
+        'department_id',
+        'name',
+        'code',
+        'degree',
+        'is_active',
     ];
 
     /**
@@ -73,35 +71,16 @@ class Payment extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'amount' => 'integer',
-            'status' => PaymentStatus::class,
-            'verified_at' => 'datetime',
+            'degree' => DegreeLevel::class,
+            'is_active' => 'boolean',
         ];
     }
 
     /**
-     * Register the media collections for this model.
+     * Get the department that owns the study program.
      */
-    public function registerMediaCollections(): void
+    public function department(): BelongsTo
     {
-        $this
-            ->addMediaCollection('payment-proof')
-            ->useDisk('local');
-    }
-
-    /**
-     * Get the registration that owns the payment.
-     */
-    public function registration(): BelongsTo
-    {
-        return $this->belongsTo(Registration::class);
-    }
-
-    /**
-     * Get the user that verified the payment.
-     */
-    public function verifier(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'verified_by');
+        return $this->belongsTo(Department::class);
     }
 }

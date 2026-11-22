@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\Periods\RelationManagers;
 
 use App\Models\Placement;
+use Devletes\FilamentProgressBar\Tables\Columns\ProgressBarColumn;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -79,12 +80,18 @@ class PlacementsRelationManager extends RelationManager
                     ->label('Supervisor')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('quota')
-                    ->label('Quota')
-                    ->formatStateUsing(fn (Placement $record): string => "{$record->filled} / {$record->quota}")
-                    ->searchable()
-                    ->sortable()
-                    ->alignEnd(),
+                ProgressBarColumn::make('filled')
+                    ->state(fn (Placement $record) => [
+                        'current' => $record->filled,
+                        'total' => $record->quota,
+                    ])
+                    ->showProgressValue()
+                    ->hidePercentage()
+                    ->height('12px')
+                    ->textPosition('inside')
+                    ->thresholdDirection('ascending')
+                    ->warningThreshold(50)
+                    ->dangerThreshold(100),
             ])
             ->filters([
                 //

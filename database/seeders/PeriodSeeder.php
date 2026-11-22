@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Payment;
+use App\Models\Guardian;
 use App\Models\Period;
 use App\Models\Placement;
 use App\Models\Registration;
+use App\Models\StudentProfile;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -36,29 +37,82 @@ class PeriodSeeder extends Seeder
                     ->for(User::factory(), 'supervisor')
                     ->has(
                         Registration::factory()
-                            ->has(
-                                Payment::factory()
-                                    ->pending(),
-                                'payments'
-                            ),
+                            ->draft(),
                         'registrations',
                     )
                     ->has(
                         Registration::factory()
-                            ->has(
-                                Payment::factory()
-                                    ->verified(),
-                                'payments'
-                            ),
+                            ->submitted()
+                            ->state(fn (array $attributes): array => [
+                                'user_id' => User::factory()
+                                    ->has(
+                                        StudentProfile::factory()
+                                            ->state(fn (array $attributes, User $user): array => [
+                                                'name' => $user->name,
+                                            ]),
+                                        'studentProfile',
+                                    )
+                                    ->has(
+                                        Guardian::factory()
+                                            ->father(),
+                                        'guardians',
+                                    )
+                                    ->has(
+                                        Guardian::factory()
+                                            ->mother(),
+                                        'guardians',
+                                    ),
+                            ]),
                         'registrations',
                     )
                     ->has(
                         Registration::factory()
-                            ->has(
-                                Payment::factory()
-                                    ->rejected(),
-                                'payments'
-                            ),
+                            ->approved()
+                            ->state(fn (array $attributes): array => [
+                                'user_id' => User::factory()
+                                    ->has(
+                                        StudentProfile::factory()
+                                            ->state(fn (array $attributes, User $user): array => [
+                                                'name' => $user->name,
+                                            ]),
+                                        'studentProfile',
+                                    )
+                                    ->has(
+                                        Guardian::factory()
+                                            ->father(),
+                                        'guardians',
+                                    )
+                                    ->has(
+                                        Guardian::factory()
+                                            ->mother(),
+                                        'guardians',
+                                    ),
+                            ]),
+                        'registrations',
+                    )
+                    ->has(
+                        Registration::factory()
+                            ->rejected()
+                            ->state(fn (array $attributes): array => [
+                                'user_id' => User::factory()
+                                    ->has(
+                                        StudentProfile::factory()
+                                            ->state(fn (array $attributes, User $user): array => [
+                                                'name' => $user->name,
+                                            ]),
+                                        'studentProfile',
+                                    )
+                                    ->has(
+                                        Guardian::factory()
+                                            ->father(),
+                                        'guardians',
+                                    )
+                                    ->has(
+                                        Guardian::factory()
+                                            ->mother(),
+                                        'guardians',
+                                    ),
+                            ]),
                         'registrations',
                     ),
                 'placements',

@@ -39,7 +39,7 @@ class RegistrationResource extends Resource
             ->with([
                 'period',
                 'placement.location',
-                'latestPayment',
+                'placement.supervisor',
             ]);
     }
 

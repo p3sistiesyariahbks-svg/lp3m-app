@@ -5,17 +5,19 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum PaymentStatus: string implements HasColor, HasLabel
+enum RegistrationStatus: string implements HasColor, HasLabel
 {
-    case Pending = 'pending';
-    case Verified = 'verified';
+    case Draft = 'draft';
+    case Submitted = 'submitted';
+    case Approved = 'approved';
     case Rejected = 'rejected';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::Pending => 'Pending',
-            self::Verified => 'Verified',
+            self::Draft => 'Draft',
+            self::Submitted => 'Submitted',
+            self::Approved => 'Approved',
             self::Rejected => 'Rejected',
         };
     }
@@ -23,8 +25,9 @@ enum PaymentStatus: string implements HasColor, HasLabel
     public function getColor(): string
     {
         return match ($this) {
-            self::Pending => 'warning',
-            self::Verified => 'success',
+            self::Draft => 'gray',
+            self::Submitted => 'info',
+            self::Approved => 'success',
             self::Rejected => 'danger',
         };
     }

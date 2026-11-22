@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use App\Enums\GuardianRelation;
+use App\Enums\RegistrationStatus;
 use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Mattiverse\Userstamps\Traits\Userstamps;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Registration extends Model
+class Registration extends Model implements HasMedia
 {
     /** @use HasFactory<RegistrationFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, InteractsWithMedia, Userstamps;
 
     /**
      * The table associated with the model.
@@ -59,7 +63,50 @@ class Registration extends Model
         'user_id',
         'period_id',
         'placement_id',
+        'status',
+        'amount',
+        'submitted_at',
+        'note',
+        'reviewed_by',
+        'reviewed_at',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => RegistrationStatus::class,
+            'amount' => 'integer',
+            'submitted_at' => 'datetime',
+            'reviewed_at' => 'datetime',
+        ];
+    }
+
+    /**
+     * Register the media collections.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('computer-certificate')
+            ->useDisk('local');
+        $this
+            ->addMediaCollection('skpi-certificate')
+            ->useDisk('local');
+        $this
+            ->addMediaCollection('parental-consent-letter')
+            ->useDisk('local');
+        $this
+            ->addMediaCollection('id-card')
+            ->useDisk('local');
+        $this
+            ->addMediaCollection('receipt')
+            ->useDisk('local');
+    }
 
     /**
      * Get the user that owns the registration.
@@ -86,18 +133,36 @@ class Registration extends Model
     }
 
     /**
-     * Get all of the payments for the registration.
+     * Get the student profile associated with the registration.
      */
-    public function payments(): HasMany
+    public function studentProfile(): HasOne
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasOne(StudentProfile::class, 'user_id', 'user_id');
     }
 
     /**
-     * Get the latest payment for the registration.
+     * Get the father associated with the registration.
      */
-    public function latestPayment(): HasOne
+    public function father(): HasOne
     {
-        return $this->hasOne(Payment::class)->latestOfMany();
+        return $this->hasOne(Guardian::class, 'user_id', 'user_id')
+            ->withAttributes(['relation' => GuardianRelation::Father]);
+    }
+
+    /**
+     * Get the mother associated with the registration.
+     */
+    public function mother(): HasOne
+    {
+        return $this->hasOne(Guardian::class, 'user_id', 'user_id')
+            ->withAttributes(['relation' => GuardianRelation::Mother]);
+    }
+
+    /**
+     * Get the user that reviewed the registration.
+     */
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 }

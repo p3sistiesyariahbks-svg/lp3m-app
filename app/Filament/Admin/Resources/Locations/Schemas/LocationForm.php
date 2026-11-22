@@ -17,10 +17,8 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Support\Components\Attributes\Exposed;
 use Filament\Support\Enums\Alignment;
 use Kisame76\FilamentAdvancedRichEditor\Forms\Components\AdvancedRichEditor;
-use Livewire\Attributes\Renderless;
 
 class LocationForm
 {

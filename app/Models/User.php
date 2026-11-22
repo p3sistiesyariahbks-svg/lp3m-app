@@ -11,12 +11,13 @@ use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
-use Waguilar\FilamentGuardian\Facades\Guardian;
+use Waguilar\FilamentGuardian\Facades\Guardian as FilamentGuardian;
 
 class User extends Authenticatable implements BannableInterface, HasMedia, HasRichContent
 {
@@ -98,7 +99,7 @@ class User extends Authenticatable implements BannableInterface, HasMedia, HasRi
      */
     public function canImpersonate(): bool
     {
-        return $this->hasRole(Guardian::getSuperAdminRoleName());
+        return $this->hasRole(FilamentGuardian::getSuperAdminRoleName());
     }
 
     /**
@@ -106,7 +107,7 @@ class User extends Authenticatable implements BannableInterface, HasMedia, HasRi
      */
     public function canBeImpersonated(): bool
     {
-        return ! $this->hasRole(Guardian::getSuperAdminRoleName());
+        return ! $this->hasRole(FilamentGuardian::getSuperAdminRoleName());
     }
 
     /**
@@ -115,5 +116,21 @@ class User extends Authenticatable implements BannableInterface, HasMedia, HasRi
     public function placements(): HasMany
     {
         return $this->hasMany(Placement::class, 'supervisor_id');
+    }
+
+    /**
+     * Get the student profile associated with the user.
+     */
+    public function studentProfile(): HasOne
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * Get all of the guardians for the users.
+     */
+    public function guardians(): HasMany
+    {
+        return $this->hasMany(Guardian::class);
     }
 }

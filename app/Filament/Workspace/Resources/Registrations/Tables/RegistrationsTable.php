@@ -2,6 +2,7 @@
 
 namespace App\Filament\Workspace\Resources\Registrations\Tables;
 
+use App\Models\Registration;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -26,13 +27,23 @@ class RegistrationsTable
                 TextColumn::make('placement.location.name')
                     ->label('Location')
                     ->placeholder('Unassigned')
+                    ->description(fn (Registration $record): ?string => $record->placement?->location?->address)
+                    ->words(10)
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('latestPayment.status')
-                    ->label('Payment Status')
+                TextColumn::make('status')
+                    ->label('Status')
                     ->badge()
-                    ->searchable()
                     ->sortable(),
+                TextColumn::make('submitted_at')
+                    ->label('Submitted At')
+                    ->dateTime()
+                    ->placeholder('Not submitted')
+                    ->sortable(),
+                TextColumn::make('note')
+                    ->label('Note')
+                    ->placeholder('-')
+                    ->wrap(),
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()

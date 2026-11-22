@@ -61,21 +61,27 @@ class UserForm
                             ->required()
                             ->email()
                             ->unique(table: 'users', column: 'email')
+                            ->live(debounce: 500)
                             ->label('Email Address')
                             ->columnSpan(1),
                         TextInput::make('phone_number')
                             ->tel()
-                            ->label('Phone Number')
+                            ->minLength(6)
+                            ->maxLength(20)
+                            ->label('Support Phone')
+                            ->placeholder('+12345678900000')
                             ->columnSpan(1),
                         Group::make([
-                            Text::make('Set a secure password for the new user'),
+                            Text::make(fn (string $operation): string => $operation === 'create'
+                                ? 'Set a secure password for the new user'
+                                : 'Leave blank to keep the current password'),
                             Grid::make(2)
                                 ->schema([
                                     TextInput::make('password')
                                         ->password()
                                         ->minLength(8)
                                         ->maxLength(255)
-                                        ->required()
+                                        ->required(fn (string $operation): bool => $operation === 'create')
                                         ->confirmed()
                                         ->revealable()
                                         ->belowContent(Schema::start([
@@ -89,6 +95,7 @@ class UserForm
                                     TextInput::make('password_confirmation')
                                         ->password()
                                         ->label('Password Confirmation')
+                                        ->requiredWith('password')
                                         ->revealable()
                                         ->dehydrated(false),
                                 ])

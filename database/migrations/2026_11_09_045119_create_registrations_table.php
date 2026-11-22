@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RegistrationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -26,6 +27,17 @@ return new class extends Migration
                 ->constrained('placements', 'id')
                 ->nullOnUpdate()
                 ->nullOnDelete();
+            $table->enum('status', RegistrationStatus::cases())->default(RegistrationStatus::Draft);
+            $table->unsignedBigInteger('amount')->nullable();
+            $table->timestamp('submitted_at')->nullable();
+            $table->text('note')->nullable();
+            $table->foreignUuid('reviewed_by')
+                ->nullable()
+                ->constrained('users', 'id')
+                ->nullOnUpdate()
+                ->nullOnDelete();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->userstampsUuid();
             $table->timestamps();
 
             $table->unique(['user_id', 'period_id']);

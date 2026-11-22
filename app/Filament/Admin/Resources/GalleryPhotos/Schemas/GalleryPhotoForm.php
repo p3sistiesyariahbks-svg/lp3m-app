@@ -80,7 +80,7 @@ class GalleryPhotoForm
                                         ->addActionLabel('Add image')
                                         ->reorderableWithButtons()
                                         ->collapsible()
-                                        ->itemLabel(fn (array $state): ?string => $state['alt'] ?? null)
+                                        ->itemLabel(fn (array $state): ?string => $state['alt'])
                                         ->minItems(1)
                                         ->maxItems(10),
                                     AdvancedRichEditor::make('content')

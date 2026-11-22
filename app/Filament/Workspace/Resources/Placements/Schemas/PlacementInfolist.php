@@ -3,6 +3,7 @@
 namespace App\Filament\Workspace\Resources\Placements\Schemas;
 
 use App\Models\Placement;
+use Carbon\CarbonInterface;
 use Devletes\FilamentProgressBar\Infolists\Components\ProgressBarEntry;
 use EduardoRibeiroDev\FilamentLeaflet\Enums\TileLayer;
 use EduardoRibeiroDev\FilamentLeaflet\Infolists\MapEntry;
@@ -97,12 +98,12 @@ class PlacementInfolist
                                     TextEntry::make('period.registration_opens_at')
                                         ->label('Registration Date')
                                         ->formatStateUsing(
-                                            fn (Placement $record): string => "{$record->period->registration_opens_at->toDateString()} – {$record->period->registration_closes_at->toDateString()}"
+                                            fn (CarbonInterface $state, Placement $record): string => "{$state->toDateString()} – {$record->period->registration_closes_at->toDateString()}"
                                         ),
                                     TextEntry::make('period.program_starts_at')
                                         ->label('Program Date')
                                         ->formatStateUsing(
-                                            fn (Placement $record): string => "{$record->period->program_starts_at->toDateString()} – {$record->period->program_ends_at->toDateString()}"
+                                            fn (CarbonInterface $state, Placement $record): string => "{$state->toDateString()} – {$record->period->program_ends_at->toDateString()}"
                                         ),
                                     TextEntry::make('period.fee')
                                         ->label('Fee')

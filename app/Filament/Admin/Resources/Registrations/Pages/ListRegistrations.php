@@ -2,52 +2,66 @@
 
 namespace App\Filament\Admin\Resources\Registrations\Pages;
 
-use App\Enums\PaymentStatus;
+use App\Enums\RegistrationStatus;
 use App\Filament\Admin\Resources\Registrations\RegistrationResource;
-use App\Filament\Admin\Resources\Registrations\Widgets\RegistrationStatsOverview;
-use Filament\Pages\Concerns\ExposesTableToWidgets;
+use App\Models\Registration;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListRegistrations extends ListRecords
 {
-    use ExposesTableToWidgets;
-
     protected static string $resource = RegistrationResource::class;
 
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('All'),
-            'pending' => Tab::make('Pending')
+            'all' => Tab::make('All')
+                ->badge(
+                    fn (): int => Registration::query()
+                        ->count()
+                )
+                ->lazyLoadedBadge(),
+            'draft' => Tab::make('Draft')
+                ->badge(
+                    fn (): int => Registration::query()
+                        ->where('status', RegistrationStatus::Draft)
+                        ->count()
+                )
+                ->lazyLoadedBadge()
                 ->modifyQueryUsing(
-                    fn (Builder $query): Builder => $query->whereHas(
-                        'latestPayment',
-                        fn (Builder $query): Builder => $query->where('status', PaymentStatus::Pending)
-                    )
+                    fn (Builder $query): Builder => $query->where('status', RegistrationStatus::Draft)
                 ),
-            'verified' => Tab::make('Verified')
+            'submitted' => Tab::make('Submitted')
+                ->badge(
+                    fn (): int => Registration::query()
+                        ->where('status', RegistrationStatus::Submitted)
+                        ->count()
+                )
+                ->lazyLoadedBadge()
                 ->modifyQueryUsing(
-                    fn (Builder $query): Builder => $query->whereHas(
-                        'latestPayment',
-                        fn (Builder $query): Builder => $query->where('status', PaymentStatus::Verified)
-                    )
+                    fn (Builder $query): Builder => $query->where('status', RegistrationStatus::Submitted)
+                ),
+            'approved' => Tab::make('Approved')
+                ->badge(
+                    fn (): int => Registration::query()
+                        ->where('status', RegistrationStatus::Approved)
+                        ->count()
+                )
+                ->lazyLoadedBadge()
+                ->modifyQueryUsing(
+                    fn (Builder $query): Builder => $query->where('status', RegistrationStatus::Approved)
                 ),
             'rejected' => Tab::make('Rejected')
+                ->badge(
+                    fn (): int => Registration::query()
+                        ->where('status', RegistrationStatus::Rejected)
+                        ->count()
+                )
+                ->lazyLoadedBadge()
                 ->modifyQueryUsing(
-                    fn (Builder $query): Builder => $query->whereHas(
-                        'latestPayment',
-                        fn (Builder $query): Builder => $query->where('status', PaymentStatus::Rejected)
-                    )
+                    fn (Builder $query): Builder => $query->where('status', RegistrationStatus::Rejected)
                 ),
-        ];
-    }
-
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            RegistrationStatsOverview::class,
         ];
     }
 }
